@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_bg"
+    android:orientation="horizontal"
+    tools:context=".DisplayIndividualFragment">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/ib_image1"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".1"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/refrigde_2" />
+
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_weight=".1"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/refrigde" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/about"
+                android:textColor="@android:color/white" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|bottom">
+
+                <ImageView
+                    android:id="@+id/ib_technical"
+                    android:layout_width="300dp"
+                    android:layout_height="200dp"
+                    android:background="?attr/selectableItemBackground"
+                    android:layout_gravity="end|bottom"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/technical_specs" />
+
+                <TextView
+                    android:id="@+id/tv_view_technical_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:layout_below="@+id/ib_technical"
+                    android:textColor="@android:color/white"
+                    android:text="Click here to enlarge Technical specs" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start|bottom">
+
+                <ImageView
+                    android:id="@+id/iv_variant"
+                    android:layout_width="70dp"
+                    android:layout_height="50dp"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/refrigde_3" />
+
+                <ImageView
+                    android:layout_width="70dp"
+                    android:layout_height="50dp"
+                    android:layout_toEndOf="@+id/iv_variant"
+                    android:contentDescription="@string/app_name"
+                    android:src="@drawable/refrigde_4" />
+            </RelativeLayout>
+
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/hello_blank_fragment" />
+
+</LinearLayout>

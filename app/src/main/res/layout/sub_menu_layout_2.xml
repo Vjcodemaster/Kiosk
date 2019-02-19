@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:gravity="center_horizontal"
+    tools:context=".AboutProductFragment">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:gravity="center_horizontal"
+        android:textColor="@android:color/white"
+        android:textAppearance="@android:style/TextAppearance.Medium"
+        android:background="@color/colorPrimaryDark"
+        android:text="Commercial Kitchens" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:gravity="center_horizontal"
+        android:textColor="@color/colorAccent"
+        android:textAppearance="@android:style/TextAppearance.Medium"
+        android:text="Trufrost - Professional Refrigeration Products" />
+
+    <Button
+        android:id="@+id/btn_refrigde"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:background="?attr/selectableItemBackground"
+        android:textAppearance="@android:style/TextAppearance.Small"
+        android:text="Reach in cabinets" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:textAppearance="@android:style/TextAppearance.Small"
+        android:background="?attr/selectableItemBackground"
+        android:text="Chef Counters" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:textAppearance="@android:style/TextAppearance.Small"
+        android:background="?attr/selectableItemBackground"
+        android:textColor="@color/colorPrimaryDark"
+        android:text="Ventilated Saladettes" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:textAppearance="@android:style/TextAppearance.Small"
+        android:background="?attr/selectableItemBackground"
+        android:textColor="@color/colorPrimaryDark"
+        android:text="Ventilated Undercounters" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:textAppearance="@android:style/TextAppearance.Small"
+        android:background="?attr/selectableItemBackground"
+        android:textColor="@color/colorPrimaryDark"
+        android:text="Countertop Cold Display" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:textAppearance="@android:style/TextAppearance.Small"
+        android:background="?attr/selectableItemBackground"
+        android:textColor="@color/colorPrimaryDark"
+        android:text="Countertop Sushi Display" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:textAppearance="@android:style/TextAppearance.Small"
+        android:background="?attr/selectableItemBackground"
+        android:textColor="@color/colorPrimaryDark"
+        android:text="Preparation Counters" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:textAppearance="@android:style/TextAppearance.Small"
+        android:background="?attr/selectableItemBackground"
+        android:textColor="@color/colorPrimaryDark"
+        android:text="Blast Chillers/Freezers" />
+</LinearLayout>
