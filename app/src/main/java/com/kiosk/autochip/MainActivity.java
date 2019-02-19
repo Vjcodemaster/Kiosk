@@ -1,12 +1,18 @@
 package com.kiosk.autochip;
 
 import android.content.Intent;
+import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -19,7 +25,9 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import app_utility.DataBaseHelper;
 import app_utility.DataReceiverService;
+import app_utility.DatabaseHandler;
 import app_utility.ImageViewRVAdapter;
 import app_utility.OnFragmentInteractionListener;
 import app_utility.StaticReferenceClass;
@@ -45,12 +53,32 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     View inflatedSubMenu2;
     public static OnFragmentInteractionListener onFragmentInteractionListener;
 
+    Button[] btnMenuOne;
+    LinearLayout llMenuOneParent;
+    DatabaseHandler dbh;
+    int[] attrs;
+    TypedArray ta;
+    Drawable drawableFromTheme;
+    TypedValue typedValue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         onFragmentInteractionListener = this;
+        dbh = new DatabaseHandler(MainActivity.this);
+        typedValue = new TypedValue();
+        getTheme().resolveAttribute(R.attr.selectableItemBackground, typedValue, true);
+
+
+       /*attrs = new int[] { android.R.attr.selectableItemBackground *//* index 0 *//*};
+
+        // Obtain the styled attributes. 'themedContext' is a context with a
+        // theme, typically the current Activity (i.e. 'this')
+        ta = obtainStyledAttributes(attrs);
+        ta.recycle();
+        drawableFromTheme = ta.getDrawable(0 *//* index *//*);
+*/
         HashMap<String, String> params = new HashMap<>();
         params.put("db", StaticReferenceClass.DB_NAME); //Trufrost-Testing
         params.put("user", StaticReferenceClass.USER_ID);
@@ -68,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         stub = findViewById(R.id.fragment_menu);
         stub.setLayoutResource(R.layout.menu_layout);
         inflated = stub.inflate();
+        llMenuOneParent = inflated.findViewById(R.id.ll_menu_layout_parent);
 
         stubSubMenu = findViewById(R.id.fragment_sub_menu);
         stubSubMenu.setLayoutResource(R.layout.sub_menu_layout);
@@ -94,6 +123,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
         LinearLayoutManager mLinearLayoutManager = new GridLayoutManager(MainActivity.this, 3);
         mLinearLayoutManager.setOrientation(RecyclerView.VERTICAL);
+
 
 
        /* int spanCount = 4; // 3 columns
@@ -136,6 +166,27 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         ImageViewRVAdapter imageViewRVAdapter = new ImageViewRVAdapter(MainActivity.this, recyclerView, getSupportFragmentManager());
         recyclerView.setAdapter(imageViewRVAdapter);
         //openMenuFragment();
+    }
+
+    public void addDynamicContents(int i, ArrayList<String> alMainProductName) {
+        //Button btnDynamic = new Button(MainActivity.this);
+
+        btnMenuOne[i] = new Button(MainActivity.this);
+
+        btnMenuOne[i].setTag(alMainProductName.get(i));
+
+        if (Build.VERSION.SDK_INT < 23) {
+            //noinspection deprecation
+            btnMenuOne[i].setTextAppearance(MainActivity.this, R.style.TextAppearance_AppCompat_Medium);
+        } else {
+            btnMenuOne[i].setTextAppearance(R.style.TextAppearance_AppCompat_Medium);
+        }
+        btnMenuOne[i].setText(alMainProductName.get(i));
+        btnMenuOne[i].setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+        //btnMenuOne[i].setBackground(drawableFromTheme);
+        btnMenuOne[i].setClickable(true);
+        btnMenuOne[i].setBackgroundResource(typedValue.resourceId);
+        llMenuOneParent.addView(btnMenuOne[i]);
     }
 
     @Override
@@ -276,6 +327,17 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
             case "OPEN_TECHNICAL_FRAGMENT":
                 openDisplayTechnicalFragment();
                 break;
+            case "UPDATE_BUTTON":
+                ArrayList<DataBaseHelper> dbData = new ArrayList<>(dbh.getAllMainProducts());
+                ArrayList<String> alMainProducts = new ArrayList<>();
+                btnMenuOne = new Button[dbData.size()];
+                for (int i = 0; i < btnMenuOne.length; i++) {
+                    alMainProducts.add(dbData.get(i).get_main_product_names());
+                    //alMainProducts = new ArrayList<>(dbData.get(i).get_main_product_names());
+                    addDynamicContents(i, alMainProducts);
+                }
+                break;
         }
     }
+
 }

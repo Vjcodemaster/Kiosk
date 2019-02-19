@@ -11,6 +11,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.kiosk.autochip.MainActivity;
 import com.kiosk.autochip.R;
 
 import org.json.JSONArray;
@@ -331,6 +332,7 @@ public class VolleyTask {
 
     private void sendMsgToActivity() {
         try {
+            MainActivity.onFragmentInteractionListener.onFragmentMessage("UPDATE_BUTTON", 0, "");
             //onServiceInterface.onServiceCall("RFID", ERROR_CODE, String.valueOf(this.jsonObject.get("rfids")), msg, alID, alData);
         } catch (Exception e1) {
             e1.printStackTrace();

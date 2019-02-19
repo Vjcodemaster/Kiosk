@@ -210,6 +210,49 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return res;
     }
 
+    public int lastIDOfMainProducts(){
+        int res;
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.query(TABLE_MAIN_PRODUCTS, new String[]{COLUMN_ID,
+        },null, null, null, null, null);
+        cursor.moveToLast();
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            res = cursor.getInt(cursor.getColumnIndex(COLUMN_ID));
+        } else {
+            res = -1;
+        }
+        cursor.close();
+        return res;
+    }
+
+    public List<DataBaseHelper> getAllMainProducts() {
+        List<DataBaseHelper> dataBaseHelperList = new ArrayList<>();
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_MAIN_PRODUCTS;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                DataBaseHelper dataBaseHelper = new DataBaseHelper();
+                dataBaseHelper.set_id(Integer.parseInt(cursor.getString(0)));
+                //dataBaseHelper.set_main_product_id(cursor.getInt(1));
+                dataBaseHelper.set_main_product_names(cursor.getString(1));
+                dataBaseHelper.set_main_product_description(cursor.getString(2));
+                dataBaseHelper.set_product_category_names(cursor.getString(3));
+                //dataBaseHelper.set_individual_product_description(cursor.getString(5));
+                //dataBaseHelper.set_individual_product_images_path(cursor.getString(6));
+                // Adding data to list
+                dataBaseHelperList.add(dataBaseHelper);
+            } while (cursor.moveToNext());
+        }
+
+        // return recent list
+        return dataBaseHelperList;
+    }
+
     public int getIdForStringTablePermanent(String str) {
         int res;
         SQLiteDatabase db = getReadableDatabase();
