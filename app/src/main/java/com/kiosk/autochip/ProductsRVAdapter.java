@@ -1,6 +1,7 @@
 package com.kiosk.autochip;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,18 +9,41 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.bumptech.glide.Glide;
+
+import java.io.File;
+import java.util.ArrayList;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import app_utility.DataBaseHelper;
+import app_utility.DatabaseHandler;
 
 public class ProductsRVAdapter extends RecyclerView.Adapter<ProductsRVAdapter.ProductItemTabHolder> {
 
     Context context;
     private RecyclerView recyclerView;
     TextView tvPrevious;
+    String sTag;
+    ArrayList<DataBaseHelper> alDb;
+    DatabaseHandler dbh;
+    ArrayList<String> alName = new ArrayList<>();
+    ArrayList<String> alDescription = new ArrayList<>();
+    ArrayList<String> alImagePath = new ArrayList<>();
 
-    public ProductsRVAdapter(Context context, RecyclerView recyclerView) {
+    public ProductsRVAdapter(Context context, RecyclerView recyclerView, String sTag) {
         this.context = context;
         this.recyclerView = recyclerView;
+        this.sTag = sTag;
+        dbh = new DatabaseHandler(context);
+        alDb = new ArrayList<>(dbh.getAllProductsData1());
+        for(int i=0; i<alDb.size(); i++){
+            if(alDb.get(i).get_product_category_names().equals(sTag)){
+                alName.add(alDb.get(i).get_individual_product_names());
+                alDescription.add(alDb.get(i).get_individual_product_description());
+                alImagePath.add(alDb.get(i).get_individual_product_images_path());
+            }
+        }
     }
 
     @NonNull
@@ -33,7 +57,14 @@ public class ProductsRVAdapter extends RecyclerView.Adapter<ProductsRVAdapter.Pr
     @Override
     public void onBindViewHolder(@NonNull final ProductsRVAdapter.ProductItemTabHolder holder, final int position) {
 
-        switch (position){
+        holder.tvProductName.setText(alName.get(position));
+        /*if(alImagePath.get(position)!=null) {
+            Uri sPath = Uri.fromFile(new File(alImagePath.get(position)));
+            Glide.with(context)
+                    .load(sPath)
+                    .into(holder.ivProducts);
+        }*/
+        /*switch (position) {
             case 0:
                 holder.ivProducts.setImageResource(R.drawable.reach_in_cabinets);
                 holder.tvProductName.setText("Reach in Cabinets");
@@ -66,12 +97,12 @@ public class ProductsRVAdapter extends RecyclerView.Adapter<ProductsRVAdapter.Pr
                 holder.ivProducts.setImageResource(R.drawable.blast_chillers_freezer);
                 holder.tvProductName.setText("Reach in Cabinets");
                 break;
-        }
+        }*/
 
         holder.ivProducts.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            MainActivity.onFragmentInteractionListener.onFragmentMessage("OPEN_DISPLAY_FRAGMENT", position, "");
+                MainActivity.onFragmentInteractionListener.onFragmentMessage("OPEN_DISPLAY_FRAGMENT", position, alName.get(position),alDescription.get(position));
             }
         });
 
@@ -93,7 +124,7 @@ public class ProductsRVAdapter extends RecyclerView.Adapter<ProductsRVAdapter.Pr
 
     @Override
     public int getItemCount() {
-        return 8; //alBeaconInfo.size()
+        return alName.size(); //alBeaconInfo.size()
     }
 
     @Override

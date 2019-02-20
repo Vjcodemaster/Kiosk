@@ -2,25 +2,37 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:orientation="vertical"
     android:layout_height="match_parent"
     android:background="@android:color/white"
     android:gravity="center_horizontal"
+    android:orientation="vertical"
     tools:context=".AboutProductFragment">
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
         android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
-        android:gravity="center_horizontal"
-        android:textColor="@android:color/white"
-        android:textAppearance="@android:style/TextAppearance.Medium"
         android:background="@color/colorPrimaryDark"
-        android:text="Commercial Kitchens" />
+        android:gravity="center_horizontal"
+        android:text="Commercial Kitchens"
+        android:textAppearance="@android:style/TextAppearance.Medium"
+        android:textColor="@android:color/white"
+        android:textStyle="bold" />
 
-    <Button
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/ll_sub_menu_parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        </LinearLayout>
+    </ScrollView>
+    <!--<Button
         android:id="@+id/btn_refrigde"
         android:layout_width="match_parent"
         android:layout_height="40dp"
@@ -75,5 +87,5 @@
         android:textAppearance="@android:style/TextAppearance.Small"
         android:background="?attr/selectableItemBackground"
         android:textColor="@color/colorAccent"
-        android:text="Butler – Commercial Blenders" />
+        android:text="Butler – Commercial Blenders" />-->
 </LinearLayout>

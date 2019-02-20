@@ -34,6 +34,8 @@ public class DisplayIndividualFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
+    TextView tvDescription;
+
     public DisplayIndividualFragment() {
         // Required empty public constructor
     }
@@ -72,18 +74,22 @@ public class DisplayIndividualFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_display_individual, container, false);
         TextView tvShowTechnicalImage = view.findViewById(R.id.tv_view_technical_image);
 
+        TextView tvHeading = view.findViewById(R.id.tv_heading);
+        tvHeading.setText(mParam1);
+        tvDescription = view.findViewById(R.id.tv_description);
+        tvDescription.setText(mParam2);
         ImageView ibImage1 = view.findViewById(R.id.ib_image1);
 
         ibImage1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity.onFragmentInteractionListener.onFragmentMessage("OPEN_DISPLAY_ENLARGE_PRODUCT_IMAGE", 0, "");
+                MainActivity.onFragmentInteractionListener.onFragmentMessage("OPEN_DISPLAY_ENLARGE_PRODUCT_IMAGE", 0, "", "");
             }
         });
         tvShowTechnicalImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity.onFragmentInteractionListener.onFragmentMessage("OPEN_TECHNICAL_FRAGMENT", 0, "");
+                MainActivity.onFragmentInteractionListener.onFragmentMessage("OPEN_TECHNICAL_FRAGMENT", 0, "", "");
             }
         });
         return view;

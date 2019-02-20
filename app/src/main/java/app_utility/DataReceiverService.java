@@ -18,6 +18,7 @@ import android.os.IBinder;
 import android.text.format.DateFormat;
 import android.util.Log;
 
+import com.android.volley.toolbox.HttpResponse;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.Request;
 import com.bumptech.glide.request.target.SizeReadyCallback;
@@ -25,10 +26,20 @@ import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.kiosk.autochip.R;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
@@ -44,6 +55,9 @@ import androidx.core.app.NotificationCompat;
 
 import static android.content.ContentValues.TAG;
 import static androidx.core.app.NotificationCompat.PRIORITY_MAX;
+import static app_utility.StaticReferenceClass.PASSWORD;
+import static app_utility.StaticReferenceClass.PRODUCT_URL;
+import static app_utility.StaticReferenceClass.USER_ID;
 
 public class DataReceiverService extends Service {
 
@@ -271,6 +285,55 @@ public class DataReceiverService extends Service {
         timer.schedule(doAsynchronousTask, 0, 5000);
     }
 
+    /*public String login(String uname, String password)
+    {
+        InputStream is = null;
+        String result = "";
+        ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+
+        try
+        {
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPost httppost = new HttpPost("http://192.168.1.15:8040/web/image/product.template/370/image/");
+
+            nameValuePairs.add(new BasicNameValuePair("emailid", uname));
+            nameValuePairs.add(new BasicNameValuePair("password", password));
+            httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+            org.apache.http.HttpResponse response = httpclient.execute(httppost);
+            HttpEntity entity = response.getEntity();
+
+            is = entity.getContent();
+        }
+        catch (Exception e)
+        {
+            Log.e("log_tag", "Error in http connection " + e.toString());
+        }
+
+        // convert response to string
+        try
+        {
+            BufferedReader reader = new BufferedReader(new InputStreamReader( is, "iso-8859-1"), 8);
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+
+            while ((line = reader.readLine()) != null)
+            {
+                sb.append(line).append("\n");
+            }
+
+            is.close();
+            result = sb.toString();
+
+            Log.v("log","Result: " + result);
+        }
+        catch (Exception e)
+        {
+            Log.v("log", "Error converting result " + e.toString());
+        }
+
+        return result;
+    }*/
     public void getBitmapFromURL(final String src, final int ID) {
         AsyncTask.execute(new Runnable() {
             Bitmap myBitmap;
@@ -278,10 +341,13 @@ public class DataReceiverService extends Service {
             public void run() {
                 try {
                     TASK_STATUS = "RUNNING";
+                    //login(USER_ID, PASSWORD);
                     java.net.URL url = new java.net.URL(src);
                     HttpURLConnection connection = (HttpURLConnection) url
                             .openConnection();
                     connection.setDoInput(true);
+                    connection.getPermission();
+                    connection.getResponseMessage();
                     connection.connect();
                     InputStream input = connection.getInputStream();
                     myBitmap = BitmapFactory.decodeStream(input);
@@ -293,7 +359,7 @@ public class DataReceiverService extends Service {
                     dbh.updateImagePathIndividualProducts(new DataBaseHelper(imagePath), ID);
                     TASK_STATUS = "NOT_RUNNING";
 
-                } catch (IOException e) {
+                } catch (Exception e) { // catch (IOException e) {
                     e.printStackTrace();
                     TASK_STATUS = "NOT_RUNNING";
                     //return null;

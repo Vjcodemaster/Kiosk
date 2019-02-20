@@ -69,7 +69,7 @@ public class ImageViewRVAdapter extends RecyclerView.Adapter<ImageViewRVAdapter.
             @Override
             public void onClick(View v) {
                 //openFragment();
-                MainActivity.onFragmentInteractionListener.onFragmentMessage("OPEN_ABOUT_FRAGMENT", position, "");
+                MainActivity.onFragmentInteractionListener.onFragmentMessage("OPEN_ABOUT_FRAGMENT", position, "", "");
 
             }
         });

@@ -55,4 +55,6 @@
         <item>@string/food_preservation</item>
         <item>@string/bio_medical</item>
     </string-array>
+
+
 </resources>

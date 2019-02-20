@@ -2,6 +2,7 @@ package app_utility;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -23,6 +24,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Objects;
+
+import static app_utility.StaticReferenceClass.DB_NAME;
+import static app_utility.StaticReferenceClass.PASSWORD;
+import static app_utility.StaticReferenceClass.PORT_NO;
+import static app_utility.StaticReferenceClass.SERVER_URL;
+import static app_utility.StaticReferenceClass.USER_ID;
 
 public class VolleyTask {
 
@@ -71,6 +78,9 @@ public class VolleyTask {
         switch (sCase) {
             case "REQUEST_PRODUCTS":
                 requestProducts(URL);
+                break;
+            case "ODOO_LOGIN":
+                loginOdoo();
                 break;
         }
     }
@@ -124,6 +134,16 @@ public class VolleyTask {
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));*/
         // add the request object to the queue to be executed
         ApplicationController.getInstance().addToRequestQueue(request);
+
+    }
+
+    private void loginOdoo(){
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                OdooConnect oc = OdooConnect.connect(SERVER_URL, PORT_NO, DB_NAME, USER_ID, PASSWORD);
+            }
+        });
 
     }
 
@@ -187,11 +207,13 @@ public class VolleyTask {
 
                             if (lhm.get(sMainCategory) != null) {
                                 hm = new HashMap<>(Objects.requireNonNull(lhm.get(sMainCategory)));
-                                alProducts.addAll(hm.get(sSubCategory));
-                                alProducts.add(sb.toString());
-                                hm = new HashMap<>();
-                                hm.put(sSubCategory, alProducts);
-                                lhm.put(sMainCategory, hm);
+                                if(hm.get(sSubCategory)!=null) {
+                                    alProducts.addAll(Objects.requireNonNull(hm.get(sSubCategory)));
+                                    alProducts.add(sb.toString());
+                                    hm = new HashMap<>();
+                                    hm.put(sSubCategory, alProducts);
+                                    lhm.put(sMainCategory, hm);
+                                }
                             } else {
                                 hm = new HashMap<>();
                                 alProducts.add(sb.toString());
@@ -332,7 +354,7 @@ public class VolleyTask {
 
     private void sendMsgToActivity() {
         try {
-            MainActivity.onFragmentInteractionListener.onFragmentMessage("UPDATE_BUTTON", 0, "");
+            MainActivity.onFragmentInteractionListener.onFragmentMessage("UPDATE_HOME_BUTTON", 0, "", "");
             //onServiceInterface.onServiceCall("RFID", ERROR_CODE, String.valueOf(this.jsonObject.get("rfids")), msg, alID, alData);
         } catch (Exception e1) {
             e1.printStackTrace();

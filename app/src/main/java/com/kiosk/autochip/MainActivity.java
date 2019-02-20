@@ -10,12 +10,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewStub;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -53,8 +52,8 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     View inflatedSubMenu2;
     public static OnFragmentInteractionListener onFragmentInteractionListener;
 
-    Button[] btnMenuOne;
-    LinearLayout llMenuOneParent;
+    Button[] btnMenuOne, btnSubMenu;
+    LinearLayout llMenuOneParent, llSubMenuParent;
     DatabaseHandler dbh;
     int[] attrs;
     TypedArray ta;
@@ -86,7 +85,9 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         Intent in = new Intent(MainActivity.this, DataReceiverService.class);
         startService(in);
 
+
         VolleyTask volleyTask = new VolleyTask(getApplicationContext(), params, "REQUEST_PRODUCTS", PRODUCT_URL);
+
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -98,17 +99,19 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         inflated = stub.inflate();
         llMenuOneParent = inflated.findViewById(R.id.ll_menu_layout_parent);
 
+
         stubSubMenu = findViewById(R.id.fragment_sub_menu);
         stubSubMenu.setLayoutResource(R.layout.sub_menu_layout);
         inflatedSubMenu = stubSubMenu.inflate();
+        llSubMenuParent = inflatedSubMenu.findViewById(R.id.ll_sub_menu_parent);
 
         stubSubMenu2 = findViewById(R.id.fragment_sub_menu_2);
         stubSubMenu2.setLayoutResource(R.layout.sub_menu_layout_2);
         inflatedSubMenu2 = stubSubMenu2.inflate();
 
-        btnRefridge = inflatedSubMenu.findViewById(R.id.btn_refrigde);
+        //btnRefridge = inflatedSubMenu.findViewById(R.id.btn_refrigde);
 
-        btnRefridge.setOnClickListener(new View.OnClickListener() {
+        /*btnRefridge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openProductsFragment();
@@ -116,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                 stubSubMenu.setVisibility(View.GONE);
                 stub.setVisibility(View.GONE);
             }
-        });
+        });*/
 
         recyclerView = findViewById(R.id.rv_products);
         //flContainer = findViewById(R.id.fl_menu);
@@ -158,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                 }
             }
         });*/
-        recyclerView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT));
+        recyclerView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(mLinearLayoutManager);
         //recyclerView.addItemDecoration(new DividerItemDecoration(MainActivity.this, DividerItemDecoration.VERTICAL));
@@ -168,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         //openMenuFragment();
     }
 
-    public void addDynamicContents(int i, ArrayList<String> alMainProductName) {
+    public void addDynamicContentsForMainMenu(int i, ArrayList<String> alMainProductName) {
         //Button btnDynamic = new Button(MainActivity.this);
 
         btnMenuOne[i] = new Button(MainActivity.this);
@@ -186,7 +189,30 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         //btnMenuOne[i].setBackground(drawableFromTheme);
         btnMenuOne[i].setClickable(true);
         btnMenuOne[i].setBackgroundResource(typedValue.resourceId);
+        btnMenuOne[i].setAllCaps(false);
         llMenuOneParent.addView(btnMenuOne[i]);
+    }
+
+    public void addDynamicContentsForSubMenu(int i, ArrayList<String> alSubCategory) {
+        //Button btnDynamic = new Button(MainActivity.this);
+
+        btnSubMenu[i] = new Button(MainActivity.this);
+
+        btnSubMenu[i].setTag(alSubCategory.get(i));
+
+        if (Build.VERSION.SDK_INT < 23) {
+            //noinspection deprecation
+            btnSubMenu[i].setTextAppearance(MainActivity.this, R.style.TextAppearance_AppCompat_Medium);
+        } else {
+            btnSubMenu[i].setTextAppearance(R.style.TextAppearance_AppCompat_Medium);
+        }
+        btnSubMenu[i].setText(alSubCategory.get(i));
+        btnSubMenu[i].setTextColor(getResources().getColor(R.color.colorPrimaryDark));
+        //btnMenuOne[i].setBackground(drawableFromTheme);
+        btnSubMenu[i].setClickable(true);
+        btnSubMenu[i].setBackgroundResource(typedValue.resourceId);
+        btnSubMenu[i].setAllCaps(false);
+        llSubMenuParent.addView(btnSubMenu[i]);
     }
 
     @Override
@@ -235,12 +261,12 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         transaction.commit();
     }
 
-    private void openProductsFragment() {
+    private void openProductsFragment(String sTag) {
         Fragment newFragment;
         FragmentTransaction transaction;
         //Bundle bundle = new Bundle();
-        //bundle.putInt("index", 0);
-        newFragment = ProductsFragment.newInstance("", "");
+        //bundle.putString("tag", sTag);
+        newFragment = ProductsFragment.newInstance(sTag, "");
         //newFragment.setArguments(bundle);
 
         //String sBackStackParent = newFragment.getClass().getName();
@@ -251,12 +277,12 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         transaction.commit();
     }
 
-    private void openDisplayIndividualFragment() {
+    private void openDisplayIndividualFragment(String sName, String sDescription) {
         Fragment newFragment;
         FragmentTransaction transaction;
         //Bundle bundle = new Bundle();
         //bundle.putInt("index", 0);
-        newFragment = DisplayIndividualFragment.newInstance("", "");
+        newFragment = DisplayIndividualFragment.newInstance(sName, sDescription);
         //newFragment.setArguments(bundle);
 
         //String sBackStackParent = newFragment.getClass().getName();
@@ -300,7 +326,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     }
 
     @Override
-    public void onFragmentMessage(String sMsg, int type, String sResult) {
+    public void onFragmentMessage(String sMsg, int type, String sResults, String sResult) {
         switch (sMsg) {
             case "SHOW_BACK_BUTTON":
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -316,7 +342,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                 //View inflated = stub.inflate();
                 break;
             case "OPEN_DISPLAY_FRAGMENT":
-                openDisplayIndividualFragment();
+                openDisplayIndividualFragment(sResults, sResult);
                 break;
             case "OPEN_DISPLAY_ENLARGE_PRODUCT_IMAGE":
                 openDisplayEnlargeProductFragment();
@@ -327,15 +353,105 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
             case "OPEN_TECHNICAL_FRAGMENT":
                 openDisplayTechnicalFragment();
                 break;
-            case "UPDATE_BUTTON":
+            case "UPDATE_HOME_BUTTON":
                 ArrayList<DataBaseHelper> dbData = new ArrayList<>(dbh.getAllMainProducts());
                 ArrayList<String> alMainProducts = new ArrayList<>();
                 btnMenuOne = new Button[dbData.size()];
                 for (int i = 0; i < btnMenuOne.length; i++) {
                     alMainProducts.add(dbData.get(i).get_main_product_names());
                     //alMainProducts = new ArrayList<>(dbData.get(i).get_main_product_names());
-                    addDynamicContents(i, alMainProducts);
+                    addDynamicContentsForMainMenu(i, alMainProducts);
+                    final int finalI = i;
+                    btnMenuOne[i].setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            //llMenuOneParent.removeAllViews();
+                            String sBtnTag = btnMenuOne[finalI].getTag().toString();
+                            ArrayList<DataBaseHelper> al = new ArrayList<>(dbh.getAllMainProducts());
+                            ArrayList<String> alSubCategory;
+                            String[] subCategory;
+                            String sss = null;
+                            for(int i=0; i<al.size(); i++){
+                                if(al.get(i).get_main_product_names().equals(sBtnTag)){
+                                    //alSubCategory = new ArrayList<>(Arrays.asList(al.get(i).get_product_category_names().split(",,")));
+                                    sss = al.get(i).get_product_category_names();
+                                    break;
+                                }
+                            }
+                            final String[] sCategory = sss.split(",,");
+                            alSubCategory = new ArrayList<>(Arrays.asList(sCategory));
+                            llSubMenuParent.removeAllViews();
+                            btnSubMenu = new Button[alSubCategory.size()];
+                            for (int i=0; i<sCategory.length; i++){
+                                addDynamicContentsForSubMenu(i, alSubCategory);
+                                final int finalI = i;
+                                btnSubMenu[i].setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        openProductsFragment(sCategory[finalI]);
+                                    }
+                                });
+                            }
+                            openMenuFragment();
+                            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                            stub.setVisibility(View.GONE);
+                            stubSubMenu.setVisibility(View.VISIBLE);
+                            /*switch (sBtnTag) {
+                                case "Commercial Kitchen":
+                                    ArrayList<DataBaseHelper> al = new ArrayList<>(dbh.getAllMainProducts());
+                                    ArrayList<String> alSubCategory;
+                                    String[] subCategory;
+                                    String sss = null;
+                                    for(int i=0; i<al.size(); i++){
+                                        if(al.get(i).get_main_product_names().equals("Commercial Kitchen")){
+                                            //alSubCategory = new ArrayList<>(Arrays.asList(al.get(i).get_product_category_names().split(",,")));
+                                            sss = al.get(i).get_product_category_names();
+                                            break;
+                                        }
+                                    }
+                                    String[] sCategory = sss.split(",,");
+                                    alSubCategory = new ArrayList<>(Arrays.asList(sCategory));
+                                    btnSubMenu = new Button[alSubCategory.size()];
+                                    for (int i=0; i<sCategory.length; i++){
+                                        addDynamicContentsForSubMenu(i, alSubCategory);
+                                        final int finalI = i;
+                                        btnSubMenu[i].setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                openDisplayIndividualFragment();
+                                            }
+                                        });
+                                    }
+                                    openMenuFragment();
+                                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                                    stub.setVisibility(View.GONE);
+                                    stubSubMenu.setVisibility(View.VISIBLE);
+                                    break;
+                                case "Bars & Pubs":
+                                    break;
+                                case "Cakes & Sweets Shop":
+                                    break;
+                                case "Food Retails":
+                                    break;
+                                case "Food Preservation":
+                                    break;
+                                case "Biomedical":
+                                    break;
+                            }*/
+                        }
+                    });
                 }
+
+                break;
+            case "UPDATE_SUB_MENU_BUTTONS":
+
+                /*ArrayList<DataBaseHelper> dbData1 = new ArrayList<>(dbh.getAllMainProducts());
+                ArrayList<String> alSubProducts = new ArrayList<>();
+                btnMenuOne = new Button[dbData1.size()];
+                for (int i = 0; i < btnMenuOne.length; i++) {
+                    alSubProducts.add(dbData1.get(i).get_product_category_names());
+                    addDynamicContentsForSubMenu(i, alSubProducts);
+                }*/
                 break;
         }
     }

@@ -76,12 +76,12 @@ public class ProductsFragment extends Fragment {
         LinearLayoutManager mLinearLayoutManager = new GridLayoutManager(getActivity(), 4);
         mLinearLayoutManager.setOrientation(RecyclerView.VERTICAL);
 
-        recyclerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        recyclerView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(mLinearLayoutManager);
         //recyclerView.addItemDecoration(new DividerItemDecoration(MainActivity.this, DividerItemDecoration.VERTICAL));
 
-        ProductsRVAdapter productsRVAdapter= new ProductsRVAdapter(getActivity(), recyclerView);
+        ProductsRVAdapter productsRVAdapter= new ProductsRVAdapter(getActivity(), recyclerView, mParam1);
         recyclerView.setAdapter(productsRVAdapter);
         return view;
     }

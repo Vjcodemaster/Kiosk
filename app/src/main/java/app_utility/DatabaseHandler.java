@@ -289,6 +289,65 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return res;
     }
 
+    public List<DataBaseHelper> getRowData(String sSubName) {
+        List<DataBaseHelper> dataBaseHelperList = new ArrayList<>();
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_MAIN_PRODUCTS + " WHERE " + " " +KEY_MAIN_PRODUCT_NAMES+ " = " + sSubName;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            //do {
+            DataBaseHelper dataBaseHelper = new DataBaseHelper();
+
+            dataBaseHelper.set_id(Integer.parseInt(cursor.getString(0)));
+            dataBaseHelper.set_product_category_names(cursor.getString(3));
+            // Adding data to list
+            dataBaseHelperList.add(dataBaseHelper);
+            //} while (cursor.moveToNext());
+        }
+
+        // return recent list
+        return dataBaseHelperList;
+    }
+
+    public List<DataBaseHelper> getAllProductsData1() {
+        List<DataBaseHelper> dataBaseHelperList = new ArrayList<>();
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_INDIVIDUAL_PRODUCTS;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                DataBaseHelper dataBaseHelper = new DataBaseHelper();
+                dataBaseHelper.set_id(Integer.parseInt(cursor.getString(0)));
+                dataBaseHelper.set_main_product_id(cursor.getInt(1));
+                dataBaseHelper.set_main_product_names(cursor.getString(2));
+                dataBaseHelper.set_product_category_names(cursor.getString(3));
+                dataBaseHelper.set_individual_product_names(cursor.getString(4));
+                dataBaseHelper.set_individual_product_description(cursor.getString(5));
+                dataBaseHelper.set_individual_product_images_path(cursor.getString(6));
+                // Adding data to list
+                dataBaseHelperList.add(dataBaseHelper);
+            } while (cursor.moveToNext());
+        }
+
+        // return recent list
+        return dataBaseHelperList;
+    }
+        /*if(sName==null){
+        return "";
+    }*//*
+            cursor.close();
+        return sName;
+}
+
+
     /*
     this will return only the product data of specific KEY_MAIN_PRODUCT_ID
     so we have to pass the id of main product id to get back only those products under main product
