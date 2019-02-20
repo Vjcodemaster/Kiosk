@@ -8,8 +8,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Environment;
@@ -18,28 +16,11 @@ import android.os.IBinder;
 import android.text.format.DateFormat;
 import android.util.Log;
 
-import com.android.volley.toolbox.HttpResponse;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.Request;
-import com.bumptech.glide.request.target.SizeReadyCallback;
-import com.bumptech.glide.request.target.Target;
-import com.bumptech.glide.request.transition.Transition;
 import com.kiosk.autochip.R;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
@@ -48,16 +29,11 @@ import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
 import static android.content.ContentValues.TAG;
 import static androidx.core.app.NotificationCompat.PRIORITY_MAX;
-import static app_utility.StaticReferenceClass.PASSWORD;
-import static app_utility.StaticReferenceClass.PRODUCT_URL;
-import static app_utility.StaticReferenceClass.USER_ID;
 
 public class DataReceiverService extends Service {
 
@@ -480,6 +456,7 @@ public class DataReceiverService extends Service {
     public class DataStorage {
         public HashMap<Integer, String> hmImageAddressWithDBID;
         public ArrayList<String> alDBIDWithAddress = new ArrayList<>();
+        public ArrayList<Integer> alDBID = new ArrayList<>();
         public ArrayList<String> alDBIDWithPath = new ArrayList<>();
     }
     /*@Override

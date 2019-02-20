@@ -7,6 +7,24 @@
     android:orientation="horizontal"
     tools:context=".DisplayIndividualFragment">
 
+    <ScrollView
+        android:layout_width="80dp"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:id="@+id/ll_image_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
     <LinearLayout
         android:layout_width="200dp"
         android:layout_height="match_parent"
@@ -15,27 +33,28 @@
         <TextView
             android:id="@+id/tv_heading"
             android:layout_width="wrap_content"
-            android:gravity="center"
-            android:layout_marginStart="10dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
             android:maxLines="2"
             android:textAppearance="@android:style/TextAppearance.Medium"
             android:textColor="@android:color/white" />
 
         <ImageView
             android:id="@+id/ib_image1"
-            android:layout_width="175dp"
-            android:layout_height="220dp"
+            android:layout_width="200dp"
+            android:layout_height="250dp"
             android:contentDescription="@string/app_name"
             android:src="@drawable/refrigde_2" />
 
-        <ImageView
+        <!--<ImageView
             android:id="@+id/ib_image2"
             android:layout_marginTop="10dp"
             android:layout_width="175dp"
             android:layout_height="220dp"
             android:contentDescription="@string/app_name"
-            android:src="@drawable/refrigde" />
+            android:src="@drawable/refrigde" />-->
 
     </LinearLayout>
 
@@ -63,8 +82,8 @@
                     android:id="@+id/ib_technical"
                     android:layout_width="300dp"
                     android:layout_height="200dp"
-                    android:background="?attr/selectableItemBackground"
                     android:layout_gravity="end|bottom"
+                    android:background="?attr/selectableItemBackground"
                     android:contentDescription="@string/app_name"
                     android:src="@drawable/technical_specs" />
 
@@ -72,10 +91,10 @@
                     android:id="@+id/tv_view_technical_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="?attr/selectableItemBackground"
                     android:layout_below="@+id/ib_technical"
-                    android:textColor="@android:color/white"
-                    android:text="Click here to enlarge Technical specs" />
+                    android:background="?attr/selectableItemBackground"
+                    android:text="Click here to enlarge Technical specs"
+                    android:textColor="@android:color/white" />
             </RelativeLayout>
 
             <RelativeLayout

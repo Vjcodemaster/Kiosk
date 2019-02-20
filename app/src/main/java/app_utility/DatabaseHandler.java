@@ -313,6 +313,27 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return dataBaseHelperList;
     }
 
+    public String getImagePathFromProducts(String sProduct) {
+        Cursor cursor = null;
+        String sName = "";
+        SQLiteDatabase db = getReadableDatabase();
+        cursor = db.query(TABLE_INDIVIDUAL_PRODUCTS, new String[]{KEY_INDIVIDUAL_PRODUCT_IMAGES_PATH,
+                }, KEY_INDIVIDUAL_PRODUCT_NAMES + "=?",
+                new String[]{sProduct}, null, null, null, null);
+        //cursor = db.rawQuery("SELECT TABLEALL FROM last_seen WHERE _id" +" = "+ID +" ", new String[] {KEY_ID + ""});
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            sName = cursor.getString(cursor.getColumnIndex(KEY_INDIVIDUAL_PRODUCT_IMAGES_PATH));
+        } else {
+            sName = "";
+        }
+        /*if(sName==null){
+            return "";
+        }*/
+        cursor.close();
+        return sName;
+    }
+
     public List<DataBaseHelper> getAllProductsData1() {
         List<DataBaseHelper> dataBaseHelperList = new ArrayList<>();
         // Select All Query
