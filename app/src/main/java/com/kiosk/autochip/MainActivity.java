@@ -1,6 +1,8 @@
 package com.kiosk.autochip;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -17,8 +19,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -29,10 +33,14 @@ import app_utility.DataReceiverService;
 import app_utility.DatabaseHandler;
 import app_utility.ImageViewRVAdapter;
 import app_utility.OnFragmentInteractionListener;
+import app_utility.PermissionHandler;
 import app_utility.StaticReferenceClass;
 import app_utility.VolleyTask;
 
+import static app_utility.PermissionHandler.WRITE_PERMISSION;
+import static app_utility.PermissionHandler.hasPermissions;
 import static app_utility.StaticReferenceClass.PRODUCT_URL;
+import static app_utility.StaticReferenceClass.WRITE_PERMISSION_CODE;
 
 public class MainActivity extends AppCompatActivity implements OnFragmentInteractionListener {
 
@@ -41,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     ViewStub stub;
     View inflated;
 
+    private int nPermissionFlag = 0;
     Button btnRefridge;
 
     Toolbar toolbar;
@@ -86,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         startService(in);
 
 
-        VolleyTask volleyTask = new VolleyTask(getApplicationContext(), params, "REQUEST_PRODUCTS", PRODUCT_URL);
+        //VolleyTask volleyTask = new VolleyTask(getApplicationContext(), params, "REQUEST_PRODUCTS", PRODUCT_URL);
 
 
         toolbar = findViewById(R.id.toolbar);
@@ -216,6 +225,19 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        if (!hasPermissions(MainActivity.this, WRITE_PERMISSION)) {
+            ActivityCompat.requestPermissions(MainActivity.this, WRITE_PERMISSION, WRITE_PERMISSION_CODE);
+        } else {
+            HashMap<String, String> params = new HashMap<>();
+            params.put("db", StaticReferenceClass.DB_NAME); //Trufrost-Testing
+            params.put("user", StaticReferenceClass.USER_ID);
+            params.put("password", StaticReferenceClass.PASSWORD);
+            VolleyTask volleyTask = new VolleyTask(getApplicationContext(), params, "REQUEST_PRODUCTS", PRODUCT_URL);
+        }
+    }
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
@@ -227,6 +249,72 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         return super.onOptionsItemSelected(item);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void onRequestPermissionsResult(int PERMISSION_ALL, String permissions[], int[] grantResults) {
+        StringBuilder sMSG = new StringBuilder();
+        if (PERMISSION_ALL == WRITE_PERMISSION_CODE) {
+            for (String sPermission : permissions) {
+                switch (sPermission) {
+                    case Manifest.permission.CAMERA:
+                        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                                //Show permission explanation dialog...
+                                //showPermissionExplanation(SignInActivity.this.getResources().getString(R.string.phone_explanation));
+                                //Toast.makeText(SignInActivity.this, "not given", Toast.LENGTH_SHORT).show();
+                                sMSG.append("WRITE_EXTERNAL_STORAGE, ");
+                                nPermissionFlag = 0;
+                            } else {
+                                //Never ask again selected, or device policy prohibits the app from having that permission.
+                                //So, disable that feature, or fall back to another situation...
+                                //@SuppressWarnings("unused") AlertDialogs alertDialogs = new AlertDialogs(HomeScreen.this, 1, mListener);
+                                //Toast.makeText(SignInActivity.this, "permission never ask", Toast.LENGTH_SHORT).show();
+                                //showPermissionExplanation(HomeScreenActivity.this.getResources().getString(R.string.phone_explanation));
+                                sMSG.append("WRITE_EXTERNAL_STORAGE, ");
+                                nPermissionFlag = 0;
+                            }
+                        }
+                        break;
+                    /*case Manifest.permission.WRITE_EXTERNAL_STORAGE:
+                        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                            if (ActivityCompat.shouldShowRequestPermissionRationale(LoginActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                                //Show permission explanation dialog...
+                                //showPermissionExplanation(SignInActivity.this.getResources().getString(R.string.phone_explanation));
+                                //Toast.makeText(SignInActivity.this, "not given", Toast.LENGTH_SHORT).show();
+                                sMSG.append("STORAGE, ");
+                                nPermissionFlag = 0;
+                            } else {
+                                //Never ask again selected, or device policy prohibits the app from having that permission.
+                                //So, disable that feature, or fall back to another situation...
+                                //@SuppressWarnings("unused") AlertDialogs alertDialogs = new AlertDialogs(HomeScreen.this, 1, mListener);
+                                //Toast.makeText(SignInActivity.this, "permission never ask", Toast.LENGTH_SHORT).show();
+                                //showPermissionExplanation(HomeScreenActivity.this.getResources().getString(R.string.phone_explanation));
+                                sMSG.append("STORAGE, ");
+                                nPermissionFlag = 0;
+                            }
+                        }
+                        break;*/
+                }
+            }
+            if (!sMSG.toString().equals("") && !sMSG.toString().equals(" ")) {
+                PermissionHandler permissionHandler = new PermissionHandler(MainActivity.this, 0, sMSG.toString(), nPermissionFlag);
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case WRITE_PERMISSION_CODE:
+                HashMap<String, String> params = new HashMap<>();
+                params.put("db", StaticReferenceClass.DB_NAME); //Trufrost-Testing
+                params.put("user", StaticReferenceClass.USER_ID);
+                params.put("password", StaticReferenceClass.PASSWORD);
+                VolleyTask volleyTask = new VolleyTask(getApplicationContext(), params, "REQUEST_PRODUCTS", PRODUCT_URL);
+                break;
+        }
+    }
     @Override
     public void onBackPressed() {
         int size = getSupportFragmentManager().getBackStackEntryCount();
@@ -378,7 +466,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                                     break;
                                 }
                             }
-                            final String[] sCategory = sss.split(",,");
+                            final String[] sCategory = sss.split("##");
                             alSubCategory = new ArrayList<>(Arrays.asList(sCategory));
                             llSubMenuParent.removeAllViews();
                             btnSubMenu = new Button[alSubCategory.size()];

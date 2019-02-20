@@ -58,6 +58,9 @@ public class ProductsRVAdapter extends RecyclerView.Adapter<ProductsRVAdapter.Pr
     public void onBindViewHolder(@NonNull final ProductsRVAdapter.ProductItemTabHolder holder, final int position) {
 
         holder.tvProductName.setText(alName.get(position));
+
+        Uri uri = Uri.fromFile(new File(alImagePath.get(position).split(",")[0]));
+        holder.ivProducts.setImageURI(uri);
         /*if(alImagePath.get(position)!=null) {
             Uri sPath = Uri.fromFile(new File(alImagePath.get(position)));
             Glide.with(context)

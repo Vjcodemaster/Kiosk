@@ -137,7 +137,7 @@ public class VolleyTask {
 
     }
 
-    private void loginOdoo(){
+    private void loginOdoo() {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
@@ -195,19 +195,19 @@ public class VolleyTask {
                             String sSubCategory = jsonArray.getJSONObject(i).get("subcategory").toString();
                             StringBuilder sb = new StringBuilder();
                             sb.append(jsonArray.getJSONObject(i).get("name"));
-                            sb.append(",,");
-                            sb.append(jsonArray.getJSONObject(i).get("product_image"));
-                            sb.append(",,");
+                            sb.append("##");
+                            sb.append(jsonArray.getJSONObject(i).get("image"));
+                            sb.append("##");
                             sb.append(jsonArray.getJSONObject(i).get("description"));
-                            sb.append(",,");
+                            sb.append("##");
                             sb.append(sSubCategory);
-                            sb.append(",,");
+                            sb.append("##");
                             sb.append(sMainCategory);
                             alProducts = new ArrayList<>();
 
                             if (lhm.get(sMainCategory) != null) {
                                 hm = new HashMap<>(Objects.requireNonNull(lhm.get(sMainCategory)));
-                                if(hm.get(sSubCategory)!=null) {
+                                if (hm.get(sSubCategory) != null) {
                                     alProducts.addAll(Objects.requireNonNull(hm.get(sSubCategory)));
                                     alProducts.add(sb.toString());
                                     hm = new HashMap<>();
@@ -230,7 +230,7 @@ public class VolleyTask {
                             hm = new HashMap<>(Objects.requireNonNull(lhm.get(alMainMenuKey.get(i))));//lhm.get(alMainMenuKey.get(i));
 
                             ArrayList<String> alKeySet = new ArrayList<>(hm.keySet());
-                            String sSubCategory = android.text.TextUtils.join(",,", alKeySet);
+                            String sSubCategory = android.text.TextUtils.join("##", alKeySet);
                             dbh.addDataToMainProducts(new DataBaseHelper(alMainMenuKey.get(i), switchDescription(alMainMenuKey.get(i)), sSubCategory));
                             int mainID = dbh.getIdForStringTablePermanent(alMainMenuKey.get(i));
                             for (int j = 0; j < alKeySet.size(); j++) {
@@ -238,14 +238,28 @@ public class VolleyTask {
                                 ArrayList<String> alTmp = new ArrayList<>(hm.get(alKeySet.get(j)));
                                 for (int k = 0; k < alTmp.size(); k++) {
                                     //ArrayList<String> alProducts = (ArrayList<String>) Arrays.asList(alTmp.get(k).split(","));
-                                    ArrayList<String> alProducts = new ArrayList<>(Arrays.asList(alTmp.get(k).split(",,")));
-                                    dbh.addDataToIndividualProducts(new DataBaseHelper(mainID, alMainMenuKey.get(i), alKeySet.get(j), alProducts.get(0), alProducts.get(2), alProducts.get(1)));
+                                    ArrayList<String> alProducts = new ArrayList<>(Arrays.asList(alTmp.get(k).split("##")));
+                                    dbh.addDataToIndividualProducts(new DataBaseHelper(mainID, alMainMenuKey.get(i), alKeySet.get(j), alProducts.get(0), alProducts.get(2), alProducts.get(1), ""));
 
-                                    if (DataReceiverService.refOfService != null){
-                                        String sData = String.valueOf(dbh.lastID()) + ",," + alProducts.get(1);
+                                    /*if (DataReceiverService.refOfService != null){
+                                        String sData = String.valueOf(dbh.lastID()) + "##" + alProducts.get(1);
                                         DataReceiverService.refOfService.dataStorage.alDBIDWithAddress.add(sData);
+                                    }*/
+                                    int id = dbh.getRecordsCount();
+                                    if (DataReceiverService.refOfService != null) {
+
+                                        String sData = String.valueOf(id) + "##" + alProducts.get(1);
+                                        String[] sSplitData = sData.split("##");
+                                        ArrayList<String> alMultipleUrl = new ArrayList<>(Arrays.asList(sSplitData[1].split(",")));
+                                        if (alMultipleUrl.size() > 1) {
+                                            for (int l = 0; l < alMultipleUrl.size(); l++) {
+                                                String sMultiple = String.valueOf(id) + "##" + alMultipleUrl.get(l);
+                                                DataReceiverService.refOfService.dataStorage.alDBIDWithAddress.add(sMultiple);
+                                            }
+                                        } else
+                                            DataReceiverService.refOfService.dataStorage.alDBIDWithAddress.add(sData);
                                     }
-                                        //DataReceiverService.refOfService.dataStorage.hmImageAddressWithDBID.put(dbh.lastID(), alProducts.get(1));
+                                    //DataReceiverService.refOfService.dataStorage.hmImageAddressWithDBID.put(dbh.lastID(), alProducts.get(1));
                                     else
                                         hmImageAddressWithDBID.put(dbh.lastID(), alProducts.get(1));
                                 }

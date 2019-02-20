@@ -50,6 +50,7 @@ public class DisplayIndividualFragment extends Fragment {
 
     DatabaseHandler dbh;
     String sImagePath;
+    String[] saImagePath;
 
     public DisplayIndividualFragment() {
         // Required empty public constructor
@@ -90,7 +91,7 @@ public class DisplayIndividualFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_display_individual, container, false);
         TextView tvShowTechnicalImage = view.findViewById(R.id.tv_view_technical_image);
 
-        sImagePath = dbh.getImagePathFromProducts(mParam1);
+        saImagePath = dbh.getImagePathFromProducts(mParam1).split(",");
         //ArrayList<DataBaseHelper> alDB = new ArrayList<>(dbh.getImagePathFromProducts(mParam1));
         TextView tvHeading = view.findViewById(R.id.tv_heading);
         tvHeading.setText(mParam1);
@@ -99,13 +100,13 @@ public class DisplayIndividualFragment extends Fragment {
         ImageView ibImage1 = view.findViewById(R.id.ib_image1);
         llImageParent = view.findViewById(R.id.ll_image_parent);
 
-        ivDynamic = new ImageView[2];
+        ivDynamic = new ImageView[saImagePath.length];
 
         for(int i=0; i<ivDynamic.length; i++){
             addDynamicImagesAndContents(i);
         }
 
-        Uri uri = Uri.fromFile(new File(sImagePath));
+        Uri uri = Uri.fromFile(new File(saImagePath[0]));
         ibImage1.setImageURI(uri);
         //llImageParent.addView(ivDynamic[i]);
 
@@ -143,7 +144,7 @@ public class DisplayIndividualFragment extends Fragment {
         //btnMenuOne[i].setClickable(true);
         //btnMenuOne[i].setBackgroundResource(typedValue.resourceId);
         //btnMenuOne[i].setAllCaps(false);
-        Uri uri = Uri.fromFile(new File(sImagePath));
+        Uri uri = Uri.fromFile(new File(saImagePath[i]));
         ivDynamic[i].setImageURI(uri);
         llImageParent.addView(ivDynamic[i]);
     }

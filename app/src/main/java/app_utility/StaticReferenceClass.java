@@ -14,6 +14,8 @@ public class StaticReferenceClass {
 
     public static final int NETWORK_ERROR_CODE = 9301;
 
+    public static final int WRITE_PERMISSION_CODE = 9001;
+
     public static final String DB_NAME = "Trufrost-server2";//"Trufrost1402";//"Trufrost-Latest";//
 
     public static final String USER_ID = "admin";//"autochipindia505@gmail.com";//"vijay@gmail.com";//"vijay.eh4@gmail.com";//

@@ -24,6 +24,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Timer;
@@ -56,6 +58,7 @@ public class DataReceiverService extends Service {
     Timer timer = new Timer();
     Handler handler = new Handler();
     public String VOLLEY_STATUS = "NOT_RUNNING";
+    public boolean isMultipleImages = false;
 
     long startTime = 0;
     long endTime = 0;
@@ -69,7 +72,7 @@ public class DataReceiverService extends Service {
     DatabaseHandler dbh;
     ArrayList<DataBaseHelper> alDBTemporaryData;
     public DataStorage dataStorage;
-
+    ArrayList<String> alImageAddress;
 
     public DataReceiverService() {
     }
@@ -98,19 +101,47 @@ public class DataReceiverService extends Service {
         dataStorage = new DataStorage();
         //onAsyncInterfaceListener = this;
 
+        alImageAddress = new ArrayList<>();
         dbh = new DatabaseHandler(getApplicationContext());
         //sharedPreferencesClass = new SharedPreferencesClass(getApplicationContext());
-        TimerTask doAsynchronousTask = new TimerTask() {
+        /*TimerTask doMultipleAsynchronousTask = new TimerTask() {
             @Override
             public void run() {
                 handler.post(new Runnable() {
                     public void run() {
 
+                    }
+                });
+            }
+
+        };
+        //Starts after 20 sec and will repeat on every 20 sec of time interval.
+        timer.schedule(doMultipleAsynchronousTask, 0, 5000);*/
+        TimerTask doAsynchronousTask = new TimerTask() {
+            @Override
+            public void run() {
+                handler.post(new Runnable() {
+                    public void run() {
+                        /*if(dataStorage!=null && dataStorage.alDBIDWithAddress.size()>=1 && TASK_STATUS.equals("NOT_RUNNING")){
+                            final int id = Integer.valueOf(dataStorage.alDBIDWithAddress.get(0).split("##")[0]);
+                            //String sURL = alImageAddress;
+                            alImageAddress = new ArrayList<>(Collections.singletonList(dataStorage.alDBIDWithAddress.get(0).split("##")[1]));
+                            if(alImageAddress.size()>1){
+                                isMultipleImages = true;
+                            } else {
+                                getBitmapFromURL(alImageAddress.get(0), id);
+                                isMultipleImages = false;
+                            }
+                            //getBitmapFromURL(sURL, id);
+                        }*/
                         if(dataStorage!=null && dataStorage.alDBIDWithAddress.size()>=1 && TASK_STATUS.equals("NOT_RUNNING")){
-                            final int id = Integer.valueOf(dataStorage.alDBIDWithAddress.get(0).split(",,")[0]);
-                            String sURL = dataStorage.alDBIDWithAddress.get(0).split(",,")[1];
+                            final int id = Integer.valueOf(dataStorage.alDBIDWithAddress.get(0).split("##")[0]);
+                            String sURL = dataStorage.alDBIDWithAddress.get(0).split("##")[1];
                             getBitmapFromURL(sURL, id);
-                        }
+                        } /*else if(dataStorage.alDBIDWithAddress.size() == 0 && TASK_STATUS.equals("NOT_RUNNING")){
+                            timer.cancel();
+                            timer.purge();
+                        }*/
                         /*if (dataStorage != null && dataStorage.alDBIDWithAddress.size() >= 1) {
                             final int id = Integer.valueOf(dataStorage.alDBIDWithAddress.get(0).split(",,")[0]);
                             String sURL = dataStorage.alDBIDWithAddress.get(0).split(",,")[1];
@@ -332,6 +363,11 @@ public class DataReceiverService extends Service {
                     String sIDWithPath = String.valueOf(ID) + ",," + imagePath;
                     dataStorage.alDBIDWithPath.add(sIDWithPath);
                     dataStorage.alDBIDWithAddress.remove(0);
+                    String sOldImagePath = dbh.getImagePathFromProducts(ID);
+                    if(sOldImagePath!=null && sOldImagePath.length()>2){
+                        String sTmp = sOldImagePath + "," + imagePath;
+                        dbh.updateImagePathIndividualProducts(new DataBaseHelper(sTmp), ID);
+                    } else
                     dbh.updateImagePathIndividualProducts(new DataBaseHelper(imagePath), ID);
                     TASK_STATUS = "NOT_RUNNING";
 

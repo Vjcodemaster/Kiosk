@@ -97,7 +97,7 @@
                     android:textColor="@android:color/white" />
             </RelativeLayout>
 
-            <RelativeLayout
+            <!--<RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|bottom">
@@ -115,7 +115,7 @@
                     android:layout_toEndOf="@+id/iv_variant"
                     android:contentDescription="@string/app_name"
                     android:src="@drawable/refrigde_4" />
-            </RelativeLayout>
+            </RelativeLayout>-->
 
 
         </FrameLayout>

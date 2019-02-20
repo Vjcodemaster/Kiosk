@@ -21,6 +21,7 @@ public class DataBaseHelper {
     private String _individual_product_images_path;
     private String _individual_product_variant_names;
     private String _individual_product_variant_images_path;
+    private String _individual_product_address;
 
     // Empty constructor
     public DataBaseHelper(){
@@ -49,13 +50,14 @@ this._individual_product_images_path = _individual_product_images_path;
     }*/
 
     public DataBaseHelper(int _main_product_id, String _main_product_names, String _product_category_names, String _individual_product_names, String _individual_product_description,
-                          String _individual_product_images_path){
+                          String _individual_product_address, String _individual_product_images_path){
         this._main_product_id = _main_product_id;
         this._main_product_names = _main_product_names;
         this._product_category_names = _product_category_names;
         //this._sub_category_ids = _sub_category_ids;
         this._individual_product_names = _individual_product_names;
         this._individual_product_description = _individual_product_description;
+        this._individual_product_address = _individual_product_address;
         this._individual_product_images_path = _individual_product_images_path;
         //this._individual_product_variant_names = _individual_product_variant_names;
         //this._individual_product_variant_images_path = _individual_product_variant_images_path;
@@ -219,5 +221,14 @@ this._individual_product_images_path = _individual_product_images_path;
         this._individual_product_variant_images_path = individual_product_variant_images_path;
     }
 
+
+    public String get_individual_product_address(){
+        return this._individual_product_address;
+    }
+
+    // setting emailID
+    public void set_individual_product_address(String individual_product_address){
+        this._individual_product_address = individual_product_address;
+    }
 
 }
