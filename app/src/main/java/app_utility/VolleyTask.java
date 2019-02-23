@@ -152,7 +152,7 @@ public class VolleyTask {
         if (mStatusCode == 200) {
             JSONObject jsonObject;
             int sResponseCode = 0;
-            Toast.makeText(context, response, Toast.LENGTH_SHORT).show();
+            //Toast.makeText(context, response, Toast.LENGTH_SHORT).show();
             try {
                 jsonObject = new JSONObject(response);
                 String sResult = jsonObject.getString("result");

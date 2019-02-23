@@ -56,5 +56,6 @@
         <item>@string/bio_medical</item>
     </string-array>
 
-
+    <!-- related to transition -->
+    <string name="viewpager_transition">viewpager_transition</string>
 </resources>

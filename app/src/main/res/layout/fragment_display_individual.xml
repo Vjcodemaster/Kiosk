@@ -13,6 +13,8 @@
 
         <LinearLayout
             android:layout_width="match_parent"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
             android:layout_height="wrap_content">
 
             <LinearLayout
@@ -68,6 +70,7 @@
 
             <TextView
                 android:id="@+id/tv_description"
+                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="@string/about"
@@ -76,7 +79,17 @@
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end|bottom">
+                android:layout_gravity="bottom|end">
+
+                <include
+                    android:id="@+id/table_layout"
+                    layout="@layout/table_layout" />
+
+                <View
+                    android:id="@+id/v_blank"
+                    android:layout_below="@+id/table_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"/>
 
                 <ImageView
                     android:id="@+id/ib_technical"
@@ -85,13 +98,14 @@
                     android:layout_gravity="end|bottom"
                     android:background="?attr/selectableItemBackground"
                     android:contentDescription="@string/app_name"
-                    android:src="@drawable/technical_specs" />
+                    android:src="@drawable/technical_specs"
+                    android:visibility="gone" />
 
                 <TextView
                     android:id="@+id/tv_view_technical_image"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/ib_technical"
+                    android:layout_below="@+id/v_blank"
                     android:background="?attr/selectableItemBackground"
                     android:text="Click here to enlarge Technical specs"
                     android:textColor="@android:color/white" />

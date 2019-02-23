@@ -1,19 +1,28 @@
 package com.kiosk.autochip;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Rect;
+import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 import app_utility.DataBaseHelper;
 import app_utility.DatabaseHandler;
 import app_utility.OnFragmentInteractionListener;
+import app_utility.ZoomOutPageTransformer;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -48,9 +57,17 @@ public class DisplayIndividualFragment extends Fragment {
 
     TextView tvDescription;
 
+    ImageView ibImage1;
+
     DatabaseHandler dbh;
     String sImagePath;
     String[] saImagePath;
+
+    Dialog dialogViewPager;
+    ViewPager mViewPagerSlideShow;
+    ImageView ivLeftArrow;
+    ImageView ivRightArrow;
+    int imagePathPosition;
 
     public DisplayIndividualFragment() {
         // Required empty public constructor
@@ -97,13 +114,21 @@ public class DisplayIndividualFragment extends Fragment {
         tvHeading.setText(mParam1);
         tvDescription = view.findViewById(R.id.tv_description);
         tvDescription.setText(mParam2);
-        ImageView ibImage1 = view.findViewById(R.id.ib_image1);
+        ibImage1 = view.findViewById(R.id.ib_image1);
         llImageParent = view.findViewById(R.id.ll_image_parent);
 
         ivDynamic = new ImageView[saImagePath.length];
 
         for(int i=0; i<ivDynamic.length; i++){
             addDynamicImagesAndContents(i);
+            final int finalI = i;
+            ivDynamic[i].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ibImage1.setImageDrawable(ivDynamic[finalI].getDrawable());
+                    imagePathPosition = finalI;
+                }
+            });
         }
 
         Uri uri = Uri.fromFile(new File(saImagePath[0]));
@@ -113,7 +138,9 @@ public class DisplayIndividualFragment extends Fragment {
         ibImage1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity.onFragmentInteractionListener.onFragmentMessage("OPEN_DISPLAY_ENLARGE_PRODUCT_IMAGE", 0, "", "");
+                //MainActivity.onFragmentInteractionListener.onFragmentMessage("OPEN_DISPLAY_ENLARGE_PRODUCT_IMAGE", 0, mParam1, "");
+                initReadMoreDialog();
+                dialogViewPager.show();
             }
         });
         tvShowTechnicalImage.setOnClickListener(new View.OnClickListener() {
@@ -125,28 +152,99 @@ public class DisplayIndividualFragment extends Fragment {
         return view;
     }
 
-    public void addDynamicImagesAndContents(int i) {
-        //Button btnDynamic = new Button(MainActivity.this);
-
+    private void addDynamicImagesAndContents(int i) {
         ivDynamic[i] = new ImageView(getActivity());
 
-        //ivDynamic[i].setTag(alMainProductName.get(i));
-
-        /*if (Build.VERSION.SDK_INT < 23) {
-            //noinspection deprecation
-            btnMenuOne[i].setTextAppearance(MainActivity.this, R.style.TextAppearance_AppCompat_Medium);
-        } else {
-            btnMenuOne[i].setTextAppearance(R.style.TextAppearance_AppCompat_Medium);
-        }*/
-        //btnMenuOne[i].setText(alMainProductName.get(i));
-        //btnMenuOne[i].setTextColor(getResources().getColor(R.color.colorPrimaryDark));
-        //btnMenuOne[i].setBackground(drawableFromTheme);
-        //btnMenuOne[i].setClickable(true);
-        //btnMenuOne[i].setBackgroundResource(typedValue.resourceId);
-        //btnMenuOne[i].setAllCaps(false);
         Uri uri = Uri.fromFile(new File(saImagePath[i]));
+        ivDynamic[i].setLayoutParams(new LinearLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
         ivDynamic[i].setImageURI(uri);
         llImageParent.addView(ivDynamic[i]);
+    }
+
+    private void initReadMoreDialog() {
+        LayoutInflater inflater = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.dialog_view_pager, null);
+        Rect displayRectangle = new Rect();
+        Window window = getActivity().getWindow();
+        window.getDecorView().getWindowVisibleDisplayFrame(displayRectangle);
+        layout.setMinimumWidth((int)(displayRectangle.width() * 0.9f));
+        layout.setMinimumHeight((int)(displayRectangle.height() * 0.9f));
+        dialogViewPager = new Dialog(getActivity());
+        dialogViewPager.setContentView(layout);
+        dialogViewPager.setCancelable(true);
+
+        TextView tvHeading = dialogViewPager.findViewById(R.id.tv_readmore_heading);
+        mViewPagerSlideShow = dialogViewPager.findViewById(R.id.viewpager_image_dialog);
+        mViewPagerSlideShow.setOffscreenPageLimit(3);
+
+
+
+        ivLeftArrow = dialogViewPager.findViewById(R.id.iv_dialog_left_arrow);
+        ivRightArrow = dialogViewPager.findViewById(R.id.iv_dialog_right_arrow);
+
+        ivLeftArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mViewPagerSlideShow.setCurrentItem(mViewPagerSlideShow.getCurrentItem() - 1);
+            }
+        });
+
+        ivRightArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mViewPagerSlideShow.setCurrentItem(mViewPagerSlideShow.getCurrentItem() + 1);
+            }
+        });
+
+        mViewPagerSlideShow.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+               /* for (int i = 0; i < nALResources.size(); i++) {
+                    if (i == position) {
+                        imageViews[i].setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.bubble_solid, null));
+                        LayerDrawable bgDrawable = (LayerDrawable) imageViews[i].getDrawable();
+                        final GradientDrawable shape = (GradientDrawable) bgDrawable.findDrawableByLayerId(R.id.shape_bubble_solid_id);
+                        shape.setColor(ResourcesCompat.getColor(getResources(), R.color.darkBlue, null));
+
+                    } else {
+                        imageViews[i].setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.bubble_holo, null));
+                        LayerDrawable bgDrawable = (LayerDrawable) imageViews[i].getDrawable();
+                        final GradientDrawable shape = (GradientDrawable) bgDrawable.findDrawableByLayerId(R.id.shape_bubble_holo_id);
+                        shape.setColor(ResourcesCompat.getColor(getResources(), R.color.whiteBlue, null));
+                    }
+                }*/
+                handleArrow(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        mViewPagerSlideShow.setPageTransformer(false, new ViewPager.PageTransformer()
+
+        {
+            @Override
+            public void transformPage(View page, float position) {
+                ZoomOutPageTransformer zoomOutPageTransformer = new ZoomOutPageTransformer();
+                zoomOutPageTransformer.transformPage(page, position);
+            }
+        });
+
+        final DialogImagePagerAdapter dialogImagePagerAdapter = new DialogImagePagerAdapter(getActivity(), saImagePath);
+        mViewPagerSlideShow.setAdapter(dialogImagePagerAdapter);
+        mViewPagerSlideShow.setCurrentItem(imagePathPosition);
+        /*Typeface lightFace = Typeface.createFromAsset(getResources().getAssets(), "fonts/myriad_pro_light.ttf");
+        Typeface regularFace = Typeface.createFromAsset(getResources().getAssets(), "fonts/myriad_pro_regular.ttf");
+        tvHeading.setTypeface(regularFace);*/
+        //tvSubHeading.setTypeface(lightFace);
+        //tvDescription.setTypeface(lightFace);
     }
 
 
@@ -165,5 +263,18 @@ public class DisplayIndividualFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    private void handleArrow(int position) {
+        if (position == 0) {
+            ivLeftArrow.setVisibility(View.GONE);
+            ivRightArrow.setVisibility(View.VISIBLE);
+        } else if (position == saImagePath.length - 1) {
+            ivRightArrow.setVisibility(View.GONE);
+            ivLeftArrow.setVisibility(View.VISIBLE);
+        } else {
+            ivLeftArrow.setVisibility(View.VISIBLE);
+            ivRightArrow.setVisibility(View.VISIBLE);
+        }
     }
 }

@@ -34,6 +34,7 @@ import app_utility.DatabaseHandler;
 import app_utility.ImageViewRVAdapter;
 import app_utility.OnFragmentInteractionListener;
 import app_utility.PermissionHandler;
+import app_utility.SharedPreferencesClass;
 import app_utility.StaticReferenceClass;
 import app_utility.VolleyTask;
 
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     TypedArray ta;
     Drawable drawableFromTheme;
     TypedValue typedValue;
+    SharedPreferencesClass sharedPreferencesClass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         setContentView(R.layout.activity_main);
         onFragmentInteractionListener = this;
         dbh = new DatabaseHandler(MainActivity.this);
+        sharedPreferencesClass = new SharedPreferencesClass(MainActivity.this);
         typedValue = new TypedValue();
         getTheme().resolveAttribute(R.attr.selectableItemBackground, typedValue, true);
 
@@ -230,11 +233,12 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         if (!hasPermissions(MainActivity.this, WRITE_PERMISSION)) {
             ActivityCompat.requestPermissions(MainActivity.this, WRITE_PERMISSION, WRITE_PERMISSION_CODE);
         } else {
-            HashMap<String, String> params = new HashMap<>();
+           /* HashMap<String, String> params = new HashMap<>();
             params.put("db", StaticReferenceClass.DB_NAME); //Trufrost-Testing
             params.put("user", StaticReferenceClass.USER_ID);
             params.put("password", StaticReferenceClass.PASSWORD);
-            VolleyTask volleyTask = new VolleyTask(getApplicationContext(), params, "REQUEST_PRODUCTS", PRODUCT_URL);
+            VolleyTask volleyTask = new VolleyTask(getApplicationContext(), params, "REQUEST_PRODUCTS", PRODUCT_URL);*/
+            downloadData();
         }
     }
     @Override
@@ -256,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         if (PERMISSION_ALL == WRITE_PERMISSION_CODE) {
             for (String sPermission : permissions) {
                 switch (sPermission) {
-                    case Manifest.permission.CAMERA:
+                    case Manifest.permission.WRITE_EXTERNAL_STORAGE:
                         if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                             if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                                 //Show permission explanation dialog...
@@ -273,6 +277,8 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                                 sMSG.append("WRITE_EXTERNAL_STORAGE, ");
                                 nPermissionFlag = 0;
                             }
+                        } else {
+                            downloadData();
                         }
                         break;
                     /*case Manifest.permission.WRITE_EXTERNAL_STORAGE:
@@ -299,6 +305,16 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
             if (!sMSG.toString().equals("") && !sMSG.toString().equals(" ")) {
                 PermissionHandler permissionHandler = new PermissionHandler(MainActivity.this, 0, sMSG.toString(), nPermissionFlag);
             }
+        }
+    }
+
+    private void downloadData(){
+        if(!sharedPreferencesClass.getUserLogStatus()) {
+            HashMap<String, String> params = new HashMap<>();
+            params.put("db", StaticReferenceClass.DB_NAME); //Trufrost-Testing
+            params.put("user", StaticReferenceClass.USER_ID);
+            params.put("password", StaticReferenceClass.PASSWORD);
+            VolleyTask volleyTask = new VolleyTask(getApplicationContext(), params, "REQUEST_PRODUCTS", PRODUCT_URL);
         }
     }
 
@@ -381,12 +397,12 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         transaction.commit();
     }
 
-    private void openDisplayEnlargeProductFragment() {
+    private void openDisplayEnlargeProductFragment(String sImagesPath) {
         Fragment newFragment;
         FragmentTransaction transaction;
         //Bundle bundle = new Bundle();
         //bundle.putInt("index", 0);
-        newFragment = EnlargeProductImage.newInstance("", "");
+        newFragment = EnlargeProductImage.newInstance(sImagesPath, "");
         //newFragment.setArguments(bundle);
 
         //String sBackStackParent = newFragment.getClass().getName();
@@ -433,7 +449,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                 openDisplayIndividualFragment(sResults, sResult);
                 break;
             case "OPEN_DISPLAY_ENLARGE_PRODUCT_IMAGE":
-                openDisplayEnlargeProductFragment();
+                openDisplayEnlargeProductFragment(sResults);
                 break;
             case "HIDE_BACK_BUTTON":
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
@@ -529,7 +545,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                         }
                     });
                 }
-
+                //sharedPreferencesClass.setUserLogStatus(true);
                 break;
             case "UPDATE_SUB_MENU_BUTTONS":
 
