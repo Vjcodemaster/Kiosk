@@ -150,7 +150,7 @@ public class VolleyTask {
 
     private void onPostProductsReceived(int mStatusCode, String response) {
         if (mStatusCode == 200) {
-            JSONObject jsonObject;
+            JSONObject jsonObject = null;
             int sResponseCode = 0;
             //Toast.makeText(context, response, Toast.LENGTH_SHORT).show();
             try {
@@ -159,6 +159,7 @@ public class VolleyTask {
                 jsonObject = new JSONObject(sResult);
                 sResponseCode = jsonObject.getInt("response_code");
             } catch (Exception e) {
+                e.printStackTrace();
                 /*ERROR_CODE = 900;
                 msg = "No IDS matched";
                 e.printStackTrace();

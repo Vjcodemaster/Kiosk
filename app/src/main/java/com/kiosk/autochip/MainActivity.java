@@ -1,18 +1,27 @@
 package com.kiosk.autochip;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewStub;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import java.util.ArrayList;
@@ -71,6 +80,14 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     TypedValue typedValue;
     SharedPreferencesClass sharedPreferencesClass;
 
+    ImageButton ibSearch;
+    AutoCompleteTextView actvSearch;
+    String itemAtPosition = "";
+
+    private FilterAdapter filterAdapter;
+    ArrayList<DataBaseHelper> alDb;
+    ArrayList<String> alProductNames;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,6 +120,49 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        ibSearch = toolbar.findViewById(R.id.ib_search);
+        actvSearch = toolbar.findViewById(R.id.actv_search);
+        actvSearch.setThreshold(1);
+
+        actvSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        actvSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                itemAtPosition = parent.getItemAtPosition(position).toString().trim();
+                openDisplayIndividualFragment(itemAtPosition, dbh.getDescriptionFromProductName(itemAtPosition));
+                //textView.setEnabled(false);
+            }
+        });
+
+        ibSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //alDb = new ArrayList<>(dbh.getAllProductsData1());
+                alProductNames = new ArrayList<>(dbh.getProductNamesOnly());
+                filterAdapter = new FilterAdapter(MainActivity.this, android.R.layout.simple_dropdown_item_1line, alProductNames);
+                /*adapter = new ArrayAdapter<>(this,
+                        android.R.layout.simple_dropdown_item_1line, alDeliveryOrderNumber);*/
+
+                actvSearch.setAdapter(filterAdapter);
+                actvSearch.setVisibility(View.VISIBLE);
+            }
+        });
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
@@ -349,12 +409,12 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         super.onBackPressed();
     }
 
-    private void openMenuFragment() {
+    private void openMenuFragment(int pos) {
         Fragment newFragment;
         FragmentTransaction transaction;
         //Bundle bundle = new Bundle();
         //bundle.putInt("index", 0);
-        newFragment = AboutProductFragment.newInstance("", "");
+        newFragment = AboutProductFragment.newInstance(String.valueOf(pos), "");
         //newFragment.setArguments(bundle);
 
         //String sBackStackParent = newFragment.getClass().getName();
@@ -436,7 +496,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 break;
             case "OPEN_ABOUT_FRAGMENT":
-                openMenuFragment();
+                openMenuFragment(type);
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 stub.setVisibility(View.GONE);
                 stubSubMenu.setVisibility(View.VISIBLE);
@@ -496,7 +556,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                                     }
                                 });
                             }
-                            openMenuFragment();
+                            openMenuFragment(finalI);
                             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                             stub.setVisibility(View.GONE);
                             stubSubMenu.setVisibility(View.VISIBLE);
@@ -560,4 +620,113 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         }
     }
 
+    public class FilterAdapter extends ArrayAdapter<String> implements Filterable {
+
+        ArrayList<String> originalList;
+        ArrayList<String> filteredList;
+
+        public FilterAdapter(Context context, int textViewResourceId, ArrayList<String> item) {
+            super(context, textViewResourceId, item);
+            filteredList = item;
+            originalList = new ArrayList<>(filteredList);
+        }
+
+        @Override
+        public int getCount() {
+            return filteredList.size();
+        }
+
+        @Override
+        public String getItem(int position) {
+            return filteredList.get(position);
+        }
+
+        /*@Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            super.getView(position, convertView, parent);
+            TextView tv;
+
+            if(convertView!= null)
+                tv = (TextView)convertView;
+            else
+                tv = new TextView(MainActivity.this);
+
+            //changing text size and adding icons to sightseer and destination heading
+            *//*if(position == 0)
+            {
+                tv.setText(filteredList.get(position));
+                tv.setTextSize(autoCompleteTextView.getTextSize() - 1);
+                Drawable drawable = ContextCompat.getDrawable(getApplicationContext(),R.drawable.cognito);
+                tv.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, drawable, null);
+                tv.setTextColor(Color.parseColor("#999999"));
+            }
+            else if(filteredList.get(position).contains("Destination"))
+            {
+                tv.setText(filteredList.get(position));
+                tv.setTextSize(autoCompleteTextView.getTextSize() - 1);
+                Drawable drawable = ContextCompat.getDrawable(getApplicationContext(),R.drawable.favicon);
+                tv.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, drawable, null);
+                tv.setTextColor(Color.parseColor("#999999"));
+            }
+            else{
+                tv.setText(filteredList.get(position));
+                tv.setTextSize(autoCompleteTextView.getTextSize() - 5);
+            }*//*
+            return tv;
+        }*/
+        @Override
+        public Filter getFilter() {
+            return nameFilter;
+        }
+
+        Filter nameFilter = new Filter() {
+            @Override
+            public CharSequence convertResultToString(Object resultValue) {
+                String str = (String) resultValue;
+                return str;
+            }
+
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                if (constraint != null) {
+                    filteredList.clear();
+                    for (String item : originalList) {
+                        if (item.toLowerCase().contains(constraint.toString().toLowerCase())) {
+                            filteredList.add(item);
+                        }
+                    }
+                    FilterResults filterResults = new FilterResults();
+                    filterResults.values = filteredList;
+                    filterResults.count = filteredList.size();
+                    return filterResults;
+                } else {
+                    //filteredList = originalList;
+                    return new FilterResults();
+                }
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                /*List<String> filterList = (ArrayList<String>) results.values;
+                if (results.count > 0) {
+                    //clear();
+                    for (String item : filterList) {
+                        add(item);
+
+                    }
+                    notifyDataSetChanged();
+                }*/
+                if (results != null && results.count > 0) {
+                    notifyDataSetChanged();
+                } else {
+                    filterAdapter = new FilterAdapter(MainActivity.this, android.R.layout.simple_dropdown_item_1line, originalList);
+                /*adapter = new ArrayAdapter<>(this,
+                        android.R.layout.simple_dropdown_item_1line, alDeliveryOrderNumber);*/
+
+                    actvSearch.setAdapter(filterAdapter);
+                    actvSearch.showDropDown();
+                }
+            }
+        };
+    }
 }

@@ -317,6 +317,27 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return dataBaseHelperList;
     }
 
+    public String getDescriptionFromProductName(String sProduct) {
+        Cursor cursor;
+        String sName;
+        SQLiteDatabase db = getReadableDatabase();
+        cursor = db.query(TABLE_INDIVIDUAL_PRODUCTS, new String[]{KEY_INDIVIDUAL_PRODUCT_DESCRIPTION,
+                }, KEY_INDIVIDUAL_PRODUCT_NAMES + "=?",
+                new String[]{sProduct}, null, null, null, null);
+        //cursor = db.rawQuery("SELECT TABLEALL FROM last_seen WHERE _id" +" = "+ID +" ", new String[] {KEY_ID + ""});
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            sName = cursor.getString(cursor.getColumnIndex(KEY_INDIVIDUAL_PRODUCT_DESCRIPTION));
+        } else {
+            sName = "";
+        }
+        /*if(sName==null){
+            return "";
+        }*/
+        cursor.close();
+        return sName;
+    }
+
     public String getImagePathFromProducts(String sProduct) {
         Cursor cursor = null;
         String sName = "";
@@ -372,6 +393,38 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             cursor.close();
         }
         return count;
+    }
+
+    public List<String> getProductNamesOnly() {
+        List<DataBaseHelper> dataBaseHelperList = new ArrayList<>();
+        ArrayList<String> alProductNames = new ArrayList<>();
+        // Select All Query
+        //String selectQuery = "SELECT  * FROM " + TABLE_INDIVIDUAL_PRODUCTS;
+        String selectQuery = "SELECT " + KEY_INDIVIDUAL_PRODUCT_NAMES +" FROM " + TABLE_INDIVIDUAL_PRODUCTS;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                DataBaseHelper dataBaseHelper = new DataBaseHelper();
+                //dataBaseHelper.set_id(Integer.parseInt(cursor.getString(0)));
+                /*dataBaseHelper.set_main_product_id(cursor.getInt(1));
+                dataBaseHelper.set_main_product_names(cursor.getString(2));*/
+                dataBaseHelper.set_individual_product_names(cursor.getString(0));
+                /*dataBaseHelper.set_individual_product_names(cursor.getString(4));
+                dataBaseHelper.set_individual_product_description(cursor.getString(5));
+                dataBaseHelper.set_individual_product_address(cursor.getString(6));
+                dataBaseHelper.set_individual_product_images_path(cursor.getString(7));*/
+                // Adding data to list
+                dataBaseHelperList.add(dataBaseHelper);
+                String s = String.valueOf(dataBaseHelperList.get(cursor.getPosition()).get_individual_product_names());
+                alProductNames.add(s);
+            } while (cursor.moveToNext());
+        }
+
+        // return recent list
+        return alProductNames;
     }
 
     public List<DataBaseHelper> getAllProductsData1() {

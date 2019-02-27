@@ -8,7 +8,7 @@
     tools:context=".DisplayIndividualFragment">
 
     <ScrollView
-        android:layout_width="80dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content">
 
         <LinearLayout
@@ -45,8 +45,9 @@
 
         <ImageView
             android:id="@+id/ib_image1"
-            android:layout_width="200dp"
-            android:layout_height="250dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
             android:contentDescription="@string/app_name"
             android:src="@drawable/refrigde_2" />
 

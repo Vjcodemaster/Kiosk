@@ -17,6 +17,7 @@ import app_utility.DatabaseHandler;
 import app_utility.OnFragmentInteractionListener;
 import app_utility.ZoomOutPageTransformer;
 
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,6 +69,7 @@ public class DisplayIndividualFragment extends Fragment {
     ImageView ivLeftArrow;
     ImageView ivRightArrow;
     int imagePathPosition;
+    TypedValue typedValue;
 
     public DisplayIndividualFragment() {
         // Required empty public constructor
@@ -99,6 +101,8 @@ public class DisplayIndividualFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         dbh = new DatabaseHandler(getActivity());
+        typedValue = new TypedValue();
+        getActivity().getTheme().resolveAttribute(R.attr.selectableItemBackground, typedValue, true);
     }
 
     @Override
@@ -155,9 +159,15 @@ public class DisplayIndividualFragment extends Fragment {
     private void addDynamicImagesAndContents(int i) {
         ivDynamic[i] = new ImageView(getActivity());
 
+
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 90);
+        //iv.setLayoutParams(layoutParams);
+
         Uri uri = Uri.fromFile(new File(saImagePath[i]));
-        ivDynamic[i].setLayoutParams(new LinearLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
         ivDynamic[i].setImageURI(uri);
+        //ivDynamic[i].setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        ivDynamic[i].setLayoutParams(layoutParams);
+        ivDynamic[i].setBackgroundResource(typedValue.resourceId);
         llImageParent.addView(ivDynamic[i]);
     }
 
