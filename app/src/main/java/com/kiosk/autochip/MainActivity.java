@@ -23,6 +23,7 @@ import android.widget.Filterable;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
     Button[] btnMenuOne, btnSubMenu;
     LinearLayout llMenuOneParent, llSubMenuParent;
+    TextView tvMenuName;
     DatabaseHandler dbh;
     int[] attrs;
     TypedArray ta;
@@ -83,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     ImageButton ibSearch;
     AutoCompleteTextView actvSearch;
     String itemAtPosition = "";
+    ArrayList<String> alMainProducts;
 
     private FilterAdapter filterAdapter;
     ArrayList<DataBaseHelper> alDb;
@@ -179,6 +182,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         stubSubMenu.setLayoutResource(R.layout.sub_menu_layout);
         inflatedSubMenu = stubSubMenu.inflate();
         llSubMenuParent = inflatedSubMenu.findViewById(R.id.ll_sub_menu_parent);
+        tvMenuName = inflatedSubMenu.findViewById(R.id.tv_menu_name);
 
         stubSubMenu2 = findViewById(R.id.fragment_sub_menu_2);
         stubSubMenu2.setLayoutResource(R.layout.sub_menu_layout_2);
@@ -243,6 +247,55 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
         ImageViewRVAdapter imageViewRVAdapter = new ImageViewRVAdapter(MainActivity.this, recyclerView, getSupportFragmentManager());
         recyclerView.setAdapter(imageViewRVAdapter);
+
+        if(sharedPreferencesClass.getUserLogStatus()){
+            ArrayList<DataBaseHelper> dbData = new ArrayList<>(dbh.getAllMainProducts());
+            alMainProducts = new ArrayList<>();
+            btnMenuOne = new Button[dbData.size()];
+            for (int i = 0; i < btnMenuOne.length; i++) {
+                alMainProducts.add(dbData.get(i).get_main_product_names());
+                //alMainProducts = new ArrayList<>(dbData.get(i).get_main_product_names());
+                addDynamicContentsForMainMenu(i, alMainProducts);
+                final int finalI = i;
+                btnMenuOne[i].setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //llMenuOneParent.removeAllViews();
+                        String sBtnTag = btnMenuOne[finalI].getTag().toString();
+                        ArrayList<DataBaseHelper> al = new ArrayList<>(dbh.getAllMainProducts());
+                        ArrayList<String> alSubCategory;
+                        String[] subCategory;
+                        String sss = null;
+                        for(int i=0; i<al.size(); i++){
+                            if(al.get(i).get_main_product_names().equals(sBtnTag)){
+                                //alSubCategory = new ArrayList<>(Arrays.asList(al.get(i).get_product_category_names().split(",,")));
+                                sss = al.get(i).get_product_category_names();
+                                break;
+                            }
+                        }
+                        final String[] sCategory = sss.split("##");
+                        alSubCategory = new ArrayList<>(Arrays.asList(sCategory));
+                        llSubMenuParent.removeAllViews();
+                        btnSubMenu = new Button[alSubCategory.size()];
+                        for (int i=0; i<sCategory.length; i++){
+                            addDynamicContentsForSubMenu(i, alSubCategory);
+                            final int finalI = i;
+                            btnSubMenu[i].setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    openProductsFragment(sCategory[finalI]);
+                                }
+                            });
+                        }
+                        openMenuFragment(finalI);
+                        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                        stub.setVisibility(View.GONE);
+                        stubSubMenu.setVisibility(View.VISIBLE);
+                        tvMenuName.setText(alMainProducts.get(finalI));
+                    }
+                });
+            }
+        }
         //openMenuFragment();
     }
 
@@ -496,6 +549,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
     @Override
     public void onFragmentMessage(String sMsg, int type, String sResults, String sResult) {
+
         switch (sMsg) {
             case "SHOW_BACK_BUTTON":
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -524,7 +578,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                 break;
             case "UPDATE_HOME_BUTTON":
                 ArrayList<DataBaseHelper> dbData = new ArrayList<>(dbh.getAllMainProducts());
-                ArrayList<String> alMainProducts = new ArrayList<>();
+                alMainProducts = new ArrayList<>();
                 btnMenuOne = new Button[dbData.size()];
                 for (int i = 0; i < btnMenuOne.length; i++) {
                     alMainProducts.add(dbData.get(i).get_main_product_names());
@@ -565,6 +619,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                             stub.setVisibility(View.GONE);
                             stubSubMenu.setVisibility(View.VISIBLE);
+                            tvMenuName.setText(alMainProducts.get(finalI));
                             /*switch (sBtnTag) {
                                 case "Commercial Kitchen":
                                     ArrayList<DataBaseHelper> al = new ArrayList<>(dbh.getAllMainProducts());

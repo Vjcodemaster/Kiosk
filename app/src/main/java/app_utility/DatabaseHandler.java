@@ -346,6 +346,48 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return sName;
     }
 
+    public String getProductTechSpecHeading(String sProductName) {
+        Cursor cursor;
+        String sName;
+        SQLiteDatabase db = getReadableDatabase();
+        cursor = db.query(TABLE_INDIVIDUAL_PRODUCTS, new String[]{KEY_INDIVIDUAL_PRODUCT_TECH_SPECS_HEADER,
+                }, KEY_INDIVIDUAL_PRODUCT_NAMES + "=?",
+                new String[]{sProductName}, null, null, null, null);
+        //cursor = db.rawQuery("SELECT TABLEALL FROM last_seen WHERE _id" +" = "+ID +" ", new String[] {KEY_ID + ""});
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            sName = cursor.getString(cursor.getColumnIndex(KEY_INDIVIDUAL_PRODUCT_TECH_SPECS_HEADER));
+        } else {
+            sName = "";
+        }
+        /*if(sName==null){
+            return "";
+        }*/
+        cursor.close();
+        return sName;
+    }
+
+    public String getProductTechSpecValue(String sProductName) {
+        Cursor cursor;
+        String sName;
+        SQLiteDatabase db = getReadableDatabase();
+        cursor = db.query(TABLE_INDIVIDUAL_PRODUCTS, new String[]{KEY_INDIVIDUAL_PRODUCT_TECH_SPECS_VALUE,
+                }, KEY_INDIVIDUAL_PRODUCT_NAMES + "=?",
+                new String[]{sProductName}, null, null, null, null);
+        //cursor = db.rawQuery("SELECT TABLEALL FROM last_seen WHERE _id" +" = "+ID +" ", new String[] {KEY_ID + ""});
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            sName = cursor.getString(cursor.getColumnIndex(KEY_INDIVIDUAL_PRODUCT_TECH_SPECS_VALUE));
+        } else {
+            sName = "";
+        }
+        /*if(sName==null){
+            return "";
+        }*/
+        cursor.close();
+        return sName;
+    }
+
     public String getImagePathFromProducts(String sProduct) {
         Cursor cursor = null;
         String sName = "";
@@ -435,12 +477,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return alProductNames;
     }
 
-    public List<String> getTechSpecsHeading() {
+    public List<String> getTechSpecsHeading(String sKey) {
         List<DataBaseHelper> dataBaseHelperList = new ArrayList<>();
         ArrayList<String> alTechSpecs = new ArrayList<>();
         // Select All Query
         //String selectQuery = "SELECT  * FROM " + TABLE_INDIVIDUAL_PRODUCTS;
-        String selectQuery = "SELECT " + KEY_INDIVIDUAL_PRODUCT_TECH_SPECS_HEADER +" FROM " + TABLE_INDIVIDUAL_PRODUCTS;
+        String selectQuery = "SELECT " + KEY_INDIVIDUAL_PRODUCT_TECH_SPECS_HEADER +" FROM " + TABLE_INDIVIDUAL_PRODUCTS + " WHERE "
+                + KEY_INDIVIDUAL_PRODUCT_NAMES + "=" + sKey;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -451,7 +494,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 //dataBaseHelper.set_id(Integer.parseInt(cursor.getString(0)));
                 /*dataBaseHelper.set_main_product_id(cursor.getInt(1));
                 dataBaseHelper.set_main_product_names(cursor.getString(2));*/
-                dataBaseHelper.set_individual_product_names(cursor.getString(0));
+                dataBaseHelper.set_individual_product_tech_specs_header(cursor.getString(0));
                 /*dataBaseHelper.set_individual_product_names(cursor.getString(4));
                 dataBaseHelper.set_individual_product_description(cursor.getString(5));
                 dataBaseHelper.set_individual_product_address(cursor.getString(6));
@@ -483,7 +526,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 //dataBaseHelper.set_id(Integer.parseInt(cursor.getString(0)));
                 /*dataBaseHelper.set_main_product_id(cursor.getInt(1));
                 dataBaseHelper.set_main_product_names(cursor.getString(2));*/
-                dataBaseHelper.set_individual_product_names(cursor.getString(0));
+                dataBaseHelper.set_individual_product_tech_specs_value(cursor.getString(0));
                 /*dataBaseHelper.set_individual_product_names(cursor.getString(4));
                 dataBaseHelper.set_individual_product_description(cursor.getString(5));
                 dataBaseHelper.set_individual_product_address(cursor.getString(6));

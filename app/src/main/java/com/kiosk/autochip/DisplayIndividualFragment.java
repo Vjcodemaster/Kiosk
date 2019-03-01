@@ -134,9 +134,9 @@ public class DisplayIndividualFragment extends Fragment {
         //TableRow trHeading = (TableRow) inflater.inflate(R.layout.table_row_heading, null);
         //TableLayout tlParentHeading = view.findViewById(R.id.tl_technical_specs);
 
-        alTechHeading = new ArrayList<>(Arrays.asList(dbh.getTechSpecsHeading().get(0).split(",")));
-        alTechValues = new ArrayList<>(Arrays.asList(dbh.getTechSpecsValue().get(0).split(",")));
-        alTechValues.add("Nothing");
+        alTechHeading = new ArrayList<>(Arrays.asList(dbh.getProductTechSpecHeading(mParam1).split(",")));
+        alTechValues = new ArrayList<>(Arrays.asList(dbh.getProductTechSpecValue(mParam1).split(",")));
+        //alTechValues.add("Nothing");
 
         tableRowHeading = new TableRow(getActivity());
         tableRowHeading.setBackgroundColor(getActivity().getResources().getColor(android.R.color.white));
@@ -188,7 +188,7 @@ public class DisplayIndividualFragment extends Fragment {
     private void addDynamicTextViewTechSpecsHeading(int i) {
 
         TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
-        params.setMargins(0,2,3,2);
+        params.setMargins(0, 2, 3, 2);
         params.gravity = Gravity.CENTER;
 
 
@@ -207,18 +207,25 @@ public class DisplayIndividualFragment extends Fragment {
 
     private void addDynamicTextViewTechSpecsValues(int i) {
         TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
-        params.setMargins(0,2,3,2);
+        params.setMargins(0, 2, 3, 2);
         params.gravity = Gravity.CENTER;
 
         TextView tv = new TextView(getActivity());
-        tv.setText(alTechValues.get(i));
-        tv.setLayoutParams(params);
-        tv.setTextColor(getActivity().getResources().getColor(android.R.color.darker_gray));
-        tv.setBackgroundColor(getActivity().getResources().getColor(android.R.color.white));
-        tvTechSpecsHeading[i] = tv;
-        tableRowValue.addView(tv);
-        if (i == alTechValues.size() - 1) {
-            tlTechnicalSpecs.addView(tableRowValue);
+        try {
+            tv.setText(alTechValues.get(i));
+            tv.setLayoutParams(params);
+            tv.setTextColor(getActivity().getResources().getColor(android.R.color.darker_gray));
+            tv.setBackgroundColor(getActivity().getResources().getColor(android.R.color.white));
+            tvTechSpecsHeading[i] = tv;
+            tableRowValue.addView(tv);
+            if (i == alTechHeading.size() - 1) {
+                tlTechnicalSpecs.addView(tableRowValue);
+            }
+        } catch (IndexOutOfBoundsException e) {
+            e.printStackTrace();
+            if (i == alTechHeading.size() - 1) {
+                tlTechnicalSpecs.addView(tableRowValue);
+            }
         }
     }
 
@@ -227,7 +234,7 @@ public class DisplayIndividualFragment extends Fragment {
 
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 90);
-        layoutParams.setMargins(0,2,0,2);
+        layoutParams.setMargins(0, 2, 0, 2);
         //iv.setLayoutParams(layoutParams);
 
         Uri uri = Uri.fromFile(new File(saImagePath[i]));
