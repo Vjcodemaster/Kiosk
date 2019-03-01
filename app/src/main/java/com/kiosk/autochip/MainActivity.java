@@ -146,6 +146,8 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 itemAtPosition = parent.getItemAtPosition(position).toString().trim();
                 openDisplayIndividualFragment(itemAtPosition, dbh.getDescriptionFromProductName(itemAtPosition));
+                ibSearch.setVisibility(View.VISIBLE);
+                actvSearch.setVisibility(View.GONE);
                 //textView.setEnabled(false);
             }
         });
@@ -161,6 +163,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
 
                 actvSearch.setAdapter(filterAdapter);
                 actvSearch.setVisibility(View.VISIBLE);
+                ibSearch.setVisibility(View.GONE);
             }
         });
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -406,6 +409,8 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
             stubSubMenu.setVisibility(View.GONE);
             stubSubMenu2.setVisibility(View.GONE);
         }
+        if(ibSearch.getVisibility() == View.GONE)
+            ibSearch.setVisibility(View.VISIBLE);
         super.onBackPressed();
     }
 
@@ -605,7 +610,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                         }
                     });
                 }
-                //sharedPreferencesClass.setUserLogStatus(true);
+                sharedPreferencesClass.setUserLogStatus(true);
                 break;
             case "UPDATE_SUB_MENU_BUTTONS":
 

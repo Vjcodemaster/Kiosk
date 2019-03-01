@@ -5,7 +5,7 @@
 
     <!-- #80FFFFFF color defines white color with 80% alpha-->
     <solid
-        android:color="#85FFFFFF"/>
+        android:color="@color/colorLightGrey"/>
 
     <size
         android:width="@dimen/drawable_arrow_bg"

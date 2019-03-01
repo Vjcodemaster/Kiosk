@@ -13,9 +13,9 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_marginEnd="8dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_height="wrap_content">
+            android:layout_marginEnd="8dp">
 
             <LinearLayout
                 android:id="@+id/ll_image_parent"
@@ -30,6 +30,7 @@
     <LinearLayout
         android:layout_width="200dp"
         android:layout_height="match_parent"
+        android:layout_marginEnd="10dp"
         android:orientation="vertical">
 
         <TextView
@@ -61,85 +62,125 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <!--<LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent">-->
+
+    <!--<FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">-->
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
 
             <TextView
                 android:id="@+id/tv_description"
-                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
                 android:text="@string/about"
                 android:textColor="@android:color/white" />
 
-            <RelativeLayout
-                android:layout_width="wrap_content"
+
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom|end">
+                android:fillViewport="true"
+                android:layout_gravity="bottom"
+                android:measureAllChildren="false"
+                android:layout_marginBottom="10dp"
+                android:scrollbars="none">
 
-                <include
-                    android:id="@+id/table_layout"
-                    layout="@layout/table_layout" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_height="match_parent">
 
-                <View
-                    android:id="@+id/v_blank"
-                    android:layout_below="@+id/table_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"/>
-
-                <ImageView
-                    android:id="@+id/ib_technical"
-                    android:layout_width="300dp"
-                    android:layout_height="200dp"
-                    android:layout_gravity="end|bottom"
-                    android:background="?attr/selectableItemBackground"
-                    android:contentDescription="@string/app_name"
-                    android:src="@drawable/technical_specs"
-                    android:visibility="gone" />
 
                 <TextView
-                    android:id="@+id/tv_view_technical_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/v_blank"
-                    android:background="?attr/selectableItemBackground"
-                    android:text="Click here to enlarge Technical specs"
+                    android:id="@+id/tv_specs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="bottom"
+                    android:text="Technical Specification"
                     android:textColor="@android:color/white" />
-            </RelativeLayout>
 
-            <!--<RelativeLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start|bottom">
+                <TableLayout
+                    android:id="@+id/tl_technical_specs"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
 
-                <ImageView
-                    android:id="@+id/iv_variant"
-                    android:layout_width="70dp"
-                    android:layout_height="50dp"
-                    android:contentDescription="@string/app_name"
-                    android:src="@drawable/refrigde_3" />
-
-                <ImageView
-                    android:layout_width="70dp"
-                    android:layout_height="50dp"
-                    android:layout_toEndOf="@+id/iv_variant"
-                    android:contentDescription="@string/app_name"
-                    android:src="@drawable/refrigde_4" />
-            </RelativeLayout>-->
-
-
+                </TableLayout>
+                </LinearLayout>
+            </HorizontalScrollView>
         </FrameLayout>
+    <!--<RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end">
 
-    </LinearLayout>
+        <include
+            android:id="@+id/table_layout"
+            layout="@layout/table_layout" />
 
-    <TextView
+        <View
+            android:id="@+id/v_blank"
+            android:layout_below="@+id/table_layout"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"/>
+
+        <ImageView
+            android:id="@+id/ib_technical"
+            android:layout_width="300dp"
+            android:layout_height="200dp"
+            android:layout_gravity="end|bottom"
+            android:background="?attr/selectableItemBackground"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/technical_specs"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tv_view_technical_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/v_blank"
+            android:background="?attr/selectableItemBackground"
+            android:text="Click here to enlarge Technical specs"
+            android:textColor="@android:color/white" />
+    </RelativeLayout>-->
+
+    <!--<RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|bottom">
+
+        <ImageView
+            android:id="@+id/iv_variant"
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/refrigde_3" />
+
+        <ImageView
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:layout_toEndOf="@+id/iv_variant"
+            android:contentDescription="@string/app_name"
+            android:src="@drawable/refrigde_4" />
+    </RelativeLayout>-->
+
+
+    <!--</FrameLayout>-->
+
+    <!--</LinearLayout>-->
+
+    <!--<TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:text="@string/hello_blank_fragment" />-->
 
 </LinearLayout>

@@ -18,6 +18,7 @@ import app_utility.OnFragmentInteractionListener;
 import app_utility.ZoomOutPageTransformer;
 
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,10 +27,13 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 /**
@@ -70,6 +74,12 @@ public class DisplayIndividualFragment extends Fragment {
     ImageView ivRightArrow;
     int imagePathPosition;
     TypedValue typedValue;
+    TableLayout tlTechnicalSpecs;
+    ArrayList<String> alTechHeading;
+    ArrayList<String> alTechValues;
+    TextView[] tvTechSpecsHeading;
+    TextView[] tvTechSpecsValues;
+    TableRow tableRowHeading, tableRowValue;
 
     public DisplayIndividualFragment() {
         // Required empty public constructor
@@ -83,7 +93,6 @@ public class DisplayIndividualFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment DisplayIndividualFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static DisplayIndividualFragment newInstance(String param1, String param2) {
         DisplayIndividualFragment fragment = new DisplayIndividualFragment();
         Bundle args = new Bundle();
@@ -110,7 +119,7 @@ public class DisplayIndividualFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_display_individual, container, false);
-        TextView tvShowTechnicalImage = view.findViewById(R.id.tv_view_technical_image);
+        //TextView tvShowTechnicalImage = view.findViewById(R.id.tv_view_technical_image);
 
         saImagePath = dbh.getImagePathFromProducts(mParam1).split(",");
         //ArrayList<DataBaseHelper> alDB = new ArrayList<>(dbh.getImagePathFromProducts(mParam1));
@@ -120,10 +129,30 @@ public class DisplayIndividualFragment extends Fragment {
         tvDescription.setText(mParam2);
         ibImage1 = view.findViewById(R.id.ib_image1);
         llImageParent = view.findViewById(R.id.ll_image_parent);
+        tlTechnicalSpecs = view.findViewById(R.id.tl_technical_specs);
+
+        //TableRow trHeading = (TableRow) inflater.inflate(R.layout.table_row_heading, null);
+        //TableLayout tlParentHeading = view.findViewById(R.id.tl_technical_specs);
+
+        alTechHeading = new ArrayList<>(Arrays.asList(dbh.getTechSpecsHeading().get(0).split(",")));
+        alTechValues = new ArrayList<>(Arrays.asList(dbh.getTechSpecsValue().get(0).split(",")));
+        alTechValues.add("Nothing");
+
+        tableRowHeading = new TableRow(getActivity());
+        tableRowHeading.setBackgroundColor(getActivity().getResources().getColor(android.R.color.white));
+        tableRowValue = new TableRow(getActivity());
+        tableRowValue.setBackgroundColor(getActivity().getResources().getColor(android.R.color.white));
+
+        tvTechSpecsHeading = new TextView[alTechHeading.size()];
+        tvTechSpecsValues = new TextView[alTechValues.size()];
+        for (int i = 0; i < alTechHeading.size(); i++) {
+            addDynamicTextViewTechSpecsHeading(i);
+            addDynamicTextViewTechSpecsValues(i);
+        }
 
         ivDynamic = new ImageView[saImagePath.length];
 
-        for(int i=0; i<ivDynamic.length; i++){
+        for (int i = 0; i < ivDynamic.length; i++) {
             addDynamicImagesAndContents(i);
             final int finalI = i;
             ivDynamic[i].setOnClickListener(new View.OnClickListener() {
@@ -147,13 +176,50 @@ public class DisplayIndividualFragment extends Fragment {
                 dialogViewPager.show();
             }
         });
-        tvShowTechnicalImage.setOnClickListener(new View.OnClickListener() {
+        /*tvShowTechnicalImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 MainActivity.onFragmentInteractionListener.onFragmentMessage("OPEN_TECHNICAL_FRAGMENT", 0, "", "");
             }
-        });
+        });*/
         return view;
+    }
+
+    private void addDynamicTextViewTechSpecsHeading(int i) {
+
+        TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0,2,3,2);
+        params.gravity = Gravity.CENTER;
+
+
+        TextView tv = new TextView(getActivity());
+        tv.setText(alTechHeading.get(i));
+        tv.setLayoutParams(params);
+        tv.setPadding(4, 0, 4, 0);
+        tv.setTextColor(getActivity().getResources().getColor(android.R.color.white));
+        tv.setBackgroundColor(getActivity().getResources().getColor(R.color.colorAccent));
+        tvTechSpecsHeading[i] = tv;
+        tableRowHeading.addView(tv);
+        if (i == alTechHeading.size() - 1) {
+            tlTechnicalSpecs.addView(tableRowHeading, 0);
+        }
+    }
+
+    private void addDynamicTextViewTechSpecsValues(int i) {
+        TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT);
+        params.setMargins(0,2,3,2);
+        params.gravity = Gravity.CENTER;
+
+        TextView tv = new TextView(getActivity());
+        tv.setText(alTechValues.get(i));
+        tv.setLayoutParams(params);
+        tv.setTextColor(getActivity().getResources().getColor(android.R.color.darker_gray));
+        tv.setBackgroundColor(getActivity().getResources().getColor(android.R.color.white));
+        tvTechSpecsHeading[i] = tv;
+        tableRowValue.addView(tv);
+        if (i == alTechValues.size() - 1) {
+            tlTechnicalSpecs.addView(tableRowValue);
+        }
     }
 
     private void addDynamicImagesAndContents(int i) {
@@ -161,6 +227,7 @@ public class DisplayIndividualFragment extends Fragment {
 
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 90);
+        layoutParams.setMargins(0,2,0,2);
         //iv.setLayoutParams(layoutParams);
 
         Uri uri = Uri.fromFile(new File(saImagePath[i]));
@@ -172,13 +239,13 @@ public class DisplayIndividualFragment extends Fragment {
     }
 
     private void initReadMoreDialog() {
-        LayoutInflater inflater = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View layout = inflater.inflate(R.layout.dialog_view_pager, null);
         Rect displayRectangle = new Rect();
         Window window = getActivity().getWindow();
         window.getDecorView().getWindowVisibleDisplayFrame(displayRectangle);
-        layout.setMinimumWidth((int)(displayRectangle.width() * 0.9f));
-        layout.setMinimumHeight((int)(displayRectangle.height() * 0.9f));
+        layout.setMinimumWidth((int) (displayRectangle.width() * 0.9f));
+        layout.setMinimumHeight((int) (displayRectangle.height() * 0.9f));
         dialogViewPager = new Dialog(getActivity());
         dialogViewPager.setContentView(layout);
         dialogViewPager.setCancelable(true);
@@ -186,7 +253,6 @@ public class DisplayIndividualFragment extends Fragment {
         TextView tvHeading = dialogViewPager.findViewById(R.id.tv_readmore_heading);
         mViewPagerSlideShow = dialogViewPager.findViewById(R.id.viewpager_image_dialog);
         mViewPagerSlideShow.setOffscreenPageLimit(3);
-
 
 
         ivLeftArrow = dialogViewPager.findViewById(R.id.iv_dialog_left_arrow);

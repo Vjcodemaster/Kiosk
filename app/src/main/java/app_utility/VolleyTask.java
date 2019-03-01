@@ -201,6 +201,10 @@ public class VolleyTask {
                             sb.append("##");
                             sb.append(jsonArray.getJSONObject(i).get("description"));
                             sb.append("##");
+                            sb.append(jsonArray.getJSONObject(i).get("techspecheader"));
+                            sb.append("##");
+                            sb.append(jsonArray.getJSONObject(i).get("techspecvalue"));
+                            sb.append("##");
                             sb.append(sSubCategory);
                             sb.append("##");
                             sb.append(sMainCategory);
@@ -240,7 +244,7 @@ public class VolleyTask {
                                 for (int k = 0; k < alTmp.size(); k++) {
                                     //ArrayList<String> alProducts = (ArrayList<String>) Arrays.asList(alTmp.get(k).split(","));
                                     ArrayList<String> alProducts = new ArrayList<>(Arrays.asList(alTmp.get(k).split("##")));
-                                    dbh.addDataToIndividualProducts(new DataBaseHelper(mainID, alMainMenuKey.get(i), alKeySet.get(j), alProducts.get(0), alProducts.get(2), alProducts.get(1), ""));
+                                    dbh.addDataToIndividualProducts(new DataBaseHelper(mainID, alMainMenuKey.get(i), alKeySet.get(j), alProducts.get(0), alProducts.get(2), alProducts.get(1), "", alProducts.get(3), alProducts.get(4)));
 
                                     /*if (DataReceiverService.refOfService != null){
                                         String sData = String.valueOf(dbh.lastID()) + "##" + alProducts.get(1);
@@ -375,4 +379,103 @@ public class VolleyTask {
             e1.printStackTrace();
         }
     }
+
+
+    /*try {
+        //sDescription = jsonObject.getString("description");
+        msg = jsonObject.getString("message");
+        JSONArray jsonArray = new JSONArray(msg);
+
+                        *//*String sMainCategory;
+                        String sSubCategory;
+                        alProducts = new ArrayList<>();*//*
+
+        //alID = new ArrayList<>();
+        HashMap<String, ArrayList<String>> hm;
+        for (int i = 0; i < jsonArray.length(); i++) {
+            //String product = jsonArray.getJSONObject(i).getString("product");
+            //String quantity = jsonArray.getJSONObject(i).getString("quantity_received");
+
+            String sMainCategory = jsonArray.getJSONObject(i).get("maincategory").toString();
+            String sSubCategory = jsonArray.getJSONObject(i).get("subcategory").toString();
+            StringBuilder sb = new StringBuilder();
+            sb.append(jsonArray.getJSONObject(i).get("name"));
+            sb.append("##");
+            sb.append(jsonArray.getJSONObject(i).get("image"));
+            sb.append("##");
+            sb.append(jsonArray.getJSONObject(i).get("description"));
+            sb.append("##");
+            sb.append(sSubCategory);
+            sb.append("##");
+            sb.append(sMainCategory);
+            alProducts = new ArrayList<>();
+
+            if (lhm.get(sMainCategory) != null) {
+                hm = new HashMap<>(Objects.requireNonNull(lhm.get(sMainCategory)));
+                if (hm.get(sSubCategory) != null) {
+                    alProducts.addAll(Objects.requireNonNull(hm.get(sSubCategory)));
+                    alProducts.add(sb.toString());
+                    hm = new HashMap<>();
+                    hm.put(sSubCategory, alProducts);
+                    lhm.put(sMainCategory, hm);
+                }
+            } else {
+                hm = new HashMap<>();
+                alProducts.add(sb.toString());
+                hm.put(sSubCategory, alProducts);
+                lhm.put(sMainCategory, hm);
+            }
+        }
+        ArrayList<String> alMainMenuKey = new ArrayList<>(lhm.keySet());
+
+
+        //ArrayList<String> alSubCategoryKey = new ArrayList<>(hm.keySet());
+
+        for (int i = 0; i < alMainMenuKey.size(); i++) {
+            hm = new HashMap<>(Objects.requireNonNull(lhm.get(alMainMenuKey.get(i))));//lhm.get(alMainMenuKey.get(i));
+
+            ArrayList<String> alKeySet = new ArrayList<>(hm.keySet());
+            String sSubCategory = android.text.TextUtils.join("##", alKeySet);
+            dbh.addDataToMainProducts(new DataBaseHelper(alMainMenuKey.get(i), switchDescription(alMainMenuKey.get(i)), sSubCategory));
+            int mainID = dbh.getIdForStringTablePermanent(alMainMenuKey.get(i));
+            for (int j = 0; j < alKeySet.size(); j++) {
+                hm = new HashMap<>(Objects.requireNonNull(lhm.get(alMainMenuKey.get(i))));
+                ArrayList<String> alTmp = new ArrayList<>(hm.get(alKeySet.get(j)));
+                for (int k = 0; k < alTmp.size(); k++) {
+                    //ArrayList<String> alProducts = (ArrayList<String>) Arrays.asList(alTmp.get(k).split(","));
+                    ArrayList<String> alProducts = new ArrayList<>(Arrays.asList(alTmp.get(k).split("##")));
+                    dbh.addDataToIndividualProducts(new DataBaseHelper(mainID, alMainMenuKey.get(i), alKeySet.get(j), alProducts.get(0), alProducts.get(2), alProducts.get(1), ""));
+
+                                    *//*if (DataReceiverService.refOfService != null){
+                                        String sData = String.valueOf(dbh.lastID()) + "##" + alProducts.get(1);
+                                        DataReceiverService.refOfService.dataStorage.alDBIDWithAddress.add(sData);
+                                    }*//*
+                    int id = dbh.getRecordsCount();
+                    if (DataReceiverService.refOfService != null) {
+
+                        String sData = String.valueOf(id) + "##" + alProducts.get(1);
+                        String[] sSplitData = sData.split("##");
+                        ArrayList<String> alMultipleUrl = new ArrayList<>(Arrays.asList(sSplitData[1].split(",")));
+                        if (alMultipleUrl.size() > 1) {
+                            for (int l = 0; l < alMultipleUrl.size(); l++) {
+                                String sMultiple = String.valueOf(id) + "##" + alMultipleUrl.get(l);
+                                DataReceiverService.refOfService.dataStorage.alDBIDWithAddress.add(sMultiple);
+                            }
+                        } else
+                            DataReceiverService.refOfService.dataStorage.alDBIDWithAddress.add(sData);
+                    }
+                    //DataReceiverService.refOfService.dataStorage.hmImageAddressWithDBID.put(dbh.lastID(), alProducts.get(1));
+                    else
+                        hmImageAddressWithDBID.put(dbh.lastID(), alProducts.get(1));
+                }
+            }
+        }
+        ArrayList<DataBaseHelper> dbData = new ArrayList<>(dbh.getAllProductsData());
+        sendMsgToActivity();
+    } catch (JSONException e) {
+        e.printStackTrace();
+        ERROR_CODE = 901;
+        msg = "Unable to reach server, please try again";
+        sendMsgToActivity();
+    }*/
 }
