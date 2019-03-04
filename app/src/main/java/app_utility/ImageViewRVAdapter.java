@@ -16,10 +16,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class ImageViewRVAdapter extends RecyclerView.Adapter<ImageViewRVAdapter.MenuItemTabHolder> {
 
-    Context context;
+    private Context context;
     private RecyclerView recyclerView;
     TextView tvPrevious;
-    FragmentManager fragmentManager;
+    private FragmentManager fragmentManager;
+    private String sMainMenuName;
 
     public ImageViewRVAdapter(Context context, RecyclerView recyclerView, FragmentManager fragmentManager) {
         this.context = context;
@@ -38,30 +39,36 @@ public class ImageViewRVAdapter extends RecyclerView.Adapter<ImageViewRVAdapter.
     @Override
     public void onBindViewHolder(@NonNull final MenuItemTabHolder holder, final int position) {
 
-        switch (position){
+        switch (position) {
             case 0:
+                sMainMenuName = "Commercial Kitchen";
+                holder.tvProductName.setText(sMainMenuName);
                 holder.ivProducts.setImageResource(R.drawable.commercial_kitchen);
-                holder.tvProductName.setText("Commercial Kitchen");
                 break;
             case 1:
+                sMainMenuName = "Bars & Pubs";
                 holder.ivProducts.setImageResource(R.drawable.bars_pubs);
-                holder.tvProductName.setText("Bars & Pubs");
+                holder.tvProductName.setText(sMainMenuName);
                 break;
             case 2:
+                sMainMenuName = "Cake & Sweet shops";
                 holder.ivProducts.setImageResource(R.drawable.cake_sweet);
-                holder.tvProductName.setText("Cake & Sweet shops");
+                holder.tvProductName.setText(sMainMenuName);
                 break;
             case 3:
+                sMainMenuName = "Food Retail";
                 holder.ivProducts.setImageResource(R.drawable.food_retail);
-                holder.tvProductName.setText("Food Retail");
+                holder.tvProductName.setText(sMainMenuName);
                 break;
             case 4:
+                sMainMenuName = "Food Preservation";
                 holder.ivProducts.setImageResource(R.drawable.cold_storage);
-                holder.tvProductName.setText("Food Preservation");
+                holder.tvProductName.setText(sMainMenuName);
                 break;
             case 5:
+                sMainMenuName = "Bio Medical";
                 holder.ivProducts.setImageResource(R.drawable.bio_medical);
-                holder.tvProductName.setText("Bio Medical");
+                holder.tvProductName.setText(sMainMenuName);
                 break;
         }
 
@@ -69,7 +76,27 @@ public class ImageViewRVAdapter extends RecyclerView.Adapter<ImageViewRVAdapter.
             @Override
             public void onClick(View v) {
                 //openFragment();
-                MainActivity.onFragmentInteractionListener.onFragmentMessage("OPEN_ABOUT_FRAGMENT", position, "", "");
+                switch (position){
+                    case 0:
+                        sMainMenuName = "Commercial Kitchen";
+                        break;
+                    case 1:
+                        sMainMenuName = "Bars & Pubs";
+                        break;
+                    case 2:
+                        sMainMenuName = "Cake & Sweet shops";
+                        break;
+                    case 3:
+                        sMainMenuName = "Food Retail";
+                        break;
+                    case 4:
+                        sMainMenuName = "Food Preservation";
+                        break;
+                    case 5:
+                        sMainMenuName = "Bio Medical";
+                        break;
+                }
+                MainActivity.onFragmentInteractionListener.onFragmentMessage("OPEN_ABOUT_FRAGMENT", position, "", sMainMenuName);
 
             }
         });
