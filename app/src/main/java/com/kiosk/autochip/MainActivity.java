@@ -150,6 +150,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                 itemAtPosition = parent.getItemAtPosition(position).toString().trim();
                 openDisplayIndividualFragment(itemAtPosition, dbh.getDescriptionFromProductName(itemAtPosition));
                 ibSearch.setVisibility(View.VISIBLE);
+                actvSearch.setText("");
                 actvSearch.setVisibility(View.GONE);
                 //textView.setEnabled(false);
             }
@@ -464,9 +465,12 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
             stubSubMenu.setVisibility(View.GONE);
             stubSubMenu2.setVisibility(View.GONE);
         }
-        if (ibSearch.getVisibility() == View.GONE)
+        if (ibSearch.getVisibility() == View.GONE) {
+            actvSearch.setVisibility(View.GONE);
             ibSearch.setVisibility(View.VISIBLE);
-        super.onBackPressed();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     private void openMenuFragment(int pos) {
@@ -506,6 +510,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         FragmentTransaction transaction;
         //Bundle bundle = new Bundle();
         //bundle.putInt("index", 0);
+
         newFragment = DisplayIndividualFragment.newInstance(sName, sDescription);
         //newFragment.setArguments(bundle);
 
@@ -711,6 +716,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
             }
         }
         stub.setVisibility(View.GONE);
+        tvMenuName.setText(sResult);
         stubSubMenu.setVisibility(View.VISIBLE);
     }
 

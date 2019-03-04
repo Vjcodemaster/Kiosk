@@ -72,7 +72,7 @@ public class DisplayIndividualFragment extends Fragment {
     ViewPager mViewPagerSlideShow;
     ImageView ivLeftArrow;
     ImageView ivRightArrow;
-    int imagePathPosition;
+    int imagePathPosition = 0;
     TypedValue typedValue;
     TableLayout tlTechnicalSpecs;
     ArrayList<String> alTechHeading;
@@ -257,7 +257,15 @@ public class DisplayIndividualFragment extends Fragment {
         dialogViewPager.setContentView(layout);
         dialogViewPager.setCancelable(true);
 
-        TextView tvHeading = dialogViewPager.findViewById(R.id.tv_readmore_heading);
+        //TextView tvHeading = dialogViewPager.findViewById(R.id.tv_readmore_heading);
+        TextView tvClosePreview = dialogViewPager.findViewById(R.id.tv_close_dialog);
+
+        tvClosePreview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialogViewPager.dismiss();
+            }
+        });
         mViewPagerSlideShow = dialogViewPager.findViewById(R.id.viewpager_image_dialog);
         mViewPagerSlideShow.setOffscreenPageLimit(3);
 
@@ -323,6 +331,7 @@ public class DisplayIndividualFragment extends Fragment {
         final DialogImagePagerAdapter dialogImagePagerAdapter = new DialogImagePagerAdapter(getActivity(), saImagePath);
         mViewPagerSlideShow.setAdapter(dialogImagePagerAdapter);
         mViewPagerSlideShow.setCurrentItem(imagePathPosition);
+        handleArrow(imagePathPosition);
         /*Typeface lightFace = Typeface.createFromAsset(getResources().getAssets(), "fonts/myriad_pro_light.ttf");
         Typeface regularFace = Typeface.createFromAsset(getResources().getAssets(), "fonts/myriad_pro_regular.ttf");
         tvHeading.setTypeface(regularFace);*/
@@ -349,10 +358,13 @@ public class DisplayIndividualFragment extends Fragment {
     }
 
     private void handleArrow(int position) {
-        if (position == 0) {
+        if (position == 0 && mViewPagerSlideShow.getAdapter().getCount() == 1) {
+            ivLeftArrow.setVisibility(View.GONE);
+            ivRightArrow.setVisibility(View.GONE);
+        } else if(position == 0 && mViewPagerSlideShow.getAdapter().getCount() > 1){
             ivLeftArrow.setVisibility(View.GONE);
             ivRightArrow.setVisibility(View.VISIBLE);
-        } else if (position == saImagePath.length - 1) {
+        }else if (position == saImagePath.length - 1) {
             ivRightArrow.setVisibility(View.GONE);
             ivLeftArrow.setVisibility(View.VISIBLE);
         } else {

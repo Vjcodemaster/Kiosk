@@ -46,7 +46,7 @@ public class ImageViewRVAdapter extends RecyclerView.Adapter<ImageViewRVAdapter.
                 holder.ivProducts.setImageResource(R.drawable.commercial_kitchen);
                 break;
             case 1:
-                sMainMenuName = "Bars & Pubs";
+                sMainMenuName = "Bar & Pubs";
                 holder.ivProducts.setImageResource(R.drawable.bars_pubs);
                 holder.tvProductName.setText(sMainMenuName);
                 break;
@@ -81,7 +81,7 @@ public class ImageViewRVAdapter extends RecyclerView.Adapter<ImageViewRVAdapter.
                         sMainMenuName = "Commercial Kitchen";
                         break;
                     case 1:
-                        sMainMenuName = "Bars & Pubs";
+                        sMainMenuName = "Bar & Pubs";
                         break;
                     case 2:
                         sMainMenuName = "Cake & Sweet shops";

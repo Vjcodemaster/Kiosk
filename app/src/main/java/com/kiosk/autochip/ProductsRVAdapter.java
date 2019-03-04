@@ -109,6 +109,12 @@ public class ProductsRVAdapter extends RecyclerView.Adapter<ProductsRVAdapter.Pr
             }
         });
 
+        holder.tvProductName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.onFragmentInteractionListener.onFragmentMessage("OPEN_DISPLAY_FRAGMENT", position, alName.get(position),alDescription.get(position));
+            }
+        });
 
        /* holder.tvNumber.setText(String.valueOf(position+1));
 
