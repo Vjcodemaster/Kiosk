@@ -1,6 +1,7 @@
 package com.kiosk.autochip;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,6 +15,7 @@ import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewStub;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -130,7 +132,6 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         actvSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
@@ -151,7 +152,10 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                 openDisplayIndividualFragment(itemAtPosition, dbh.getDescriptionFromProductName(itemAtPosition));
                 ibSearch.setVisibility(View.VISIBLE);
                 actvSearch.setText("");
+                hideKeyboardFrom(actvSearch);
                 actvSearch.setVisibility(View.GONE);
+                actvSearch.dismissDropDown();
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 //textView.setEnabled(false);
             }
         });
@@ -168,6 +172,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                 actvSearch.setAdapter(filterAdapter);
                 actvSearch.setVisibility(View.VISIBLE);
                 ibSearch.setVisibility(View.GONE);
+
             }
         });
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -450,16 +455,24 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         }
     }
 
+    public void hideKeyboardFrom(View view) {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
     @Override
     public void onBackPressed() {
-        int size = getSupportFragmentManager().getBackStackEntryCount();
+            int size = getSupportFragmentManager().getBackStackEntryCount();
+        if (size >= 1) {
+            hideKeyboardFrom(actvSearch);
+            actvSearch.dismissDropDown();
+        }
         if (size == 2) {
             //getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             stub.setVisibility(View.GONE);
             stubSubMenu.setVisibility(View.VISIBLE);
             stubSubMenu2.setVisibility(View.GONE);
-        }
-        if (size == 1) {
+        } else if (size == 1) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             stub.setVisibility(View.VISIBLE);
             stubSubMenu.setVisibility(View.GONE);
@@ -824,7 +837,8 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                         android.R.layout.simple_dropdown_item_1line, alDeliveryOrderNumber);*/
 
                     actvSearch.setAdapter(filterAdapter);
-                    actvSearch.showDropDown();
+                    if (actvSearch.getText().length() >= 1)
+                        actvSearch.showDropDown();
                 }
             }
         };

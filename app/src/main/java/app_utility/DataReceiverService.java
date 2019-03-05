@@ -138,7 +138,12 @@ public class DataReceiverService extends Service {
                             final int id = Integer.valueOf(dataStorage.alDBIDWithAddress.get(0).split("##")[0]);
                             String sURL = dataStorage.alDBIDWithAddress.get(0).split("##")[1];
                             getBitmapFromURL(sURL, id);
-                        } /*else if(dataStorage.alDBIDWithAddress.size() == 0 && TASK_STATUS.equals("NOT_RUNNING")){
+                        } else if(dataStorage.isDataUpdatedAtleastOnce && TASK_STATUS.equals("NOT_RUNNING") &&
+                                dataStorage.alDBIDWithAddress.size()==0){
+                            timer.cancel();
+                            timer.purge();
+                            refOfService.stopSelf();
+                        }/*else if(dataStorage.alDBIDWithAddress.size() == 0 && TASK_STATUS.equals("NOT_RUNNING")){
                             timer.cancel();
                             timer.purge();
                         }*/
@@ -373,6 +378,8 @@ public class DataReceiverService extends Service {
 
                 } catch (Exception e) { // catch (IOException e) {
                     e.printStackTrace();
+                    if(src.equals("null"))
+                        dataStorage.alDBIDWithAddress.remove(0);
                     TASK_STATUS = "NOT_RUNNING";
                     //return null;
                 }
@@ -490,6 +497,7 @@ public class DataReceiverService extends Service {
     }
 
     public class DataStorage {
+        public boolean isDataUpdatedAtleastOnce = false;
         public HashMap<Integer, String> hmImageAddressWithDBID;
         public ArrayList<String> alDBIDWithAddress = new ArrayList<>();
         public ArrayList<Integer> alDBID = new ArrayList<>();

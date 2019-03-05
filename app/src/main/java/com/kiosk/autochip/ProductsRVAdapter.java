@@ -8,9 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
-import com.bumptech.glide.Glide;
-
 import java.io.File;
 import java.util.ArrayList;
 
@@ -40,6 +37,7 @@ public class ProductsRVAdapter extends RecyclerView.Adapter<ProductsRVAdapter.Pr
         for(int i=0; i<alDb.size(); i++){
             if(alDb.get(i).get_product_category_names().equals(sTag)){
                 alName.add(alDb.get(i).get_individual_product_names());
+
                 alDescription.add(alDb.get(i).get_individual_product_description());
                 alImagePath.add(alDb.get(i).get_individual_product_images_path());
             }

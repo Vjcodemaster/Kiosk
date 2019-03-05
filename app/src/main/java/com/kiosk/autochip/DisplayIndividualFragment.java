@@ -3,28 +3,14 @@ package com.kiosk.autochip;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Rect;
-import android.graphics.Typeface;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
-import app_utility.DataBaseHelper;
-import app_utility.DatabaseHandler;
-import app_utility.OnFragmentInteractionListener;
-import app_utility.ZoomOutPageTransformer;
-
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
@@ -34,6 +20,12 @@ import android.widget.TextView;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+import app_utility.DatabaseHandler;
+import app_utility.OnFragmentInteractionListener;
+import app_utility.ZoomOutPageTransformer;
 
 
 /**

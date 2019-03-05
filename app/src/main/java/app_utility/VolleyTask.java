@@ -50,9 +50,9 @@ public class VolleyTask {
     ArrayList<Integer> alProductName;
     ArrayList<Integer> alProductSubCategory;
 
-    HashMap<Integer, String> hmImageAddressWithDBID = new HashMap<>();
+    private HashMap<Integer, String> hmImageAddressWithDBID = new HashMap<>();
 
-    LinkedHashMap<String, HashMap<String, ArrayList<String>>> lhm = new LinkedHashMap<>();
+    private LinkedHashMap<String, HashMap<String, ArrayList<String>>> lhm = new LinkedHashMap<>();
     int stockFlag;
     String URL;
     JSONObject jsonObject = new JSONObject();
@@ -260,9 +260,12 @@ public class VolleyTask {
                                             for (int l = 0; l < alMultipleUrl.size(); l++) {
                                                 String sMultiple = String.valueOf(id) + "##" + alMultipleUrl.get(l);
                                                 DataReceiverService.refOfService.dataStorage.alDBIDWithAddress.add(sMultiple);
+                                                DataReceiverService.refOfService.dataStorage.isDataUpdatedAtleastOnce = true;
                                             }
-                                        } else
+                                        } else {
                                             DataReceiverService.refOfService.dataStorage.alDBIDWithAddress.add(sData);
+                                            DataReceiverService.refOfService.dataStorage.isDataUpdatedAtleastOnce = true;
+                                        }
                                     }
                                     //DataReceiverService.refOfService.dataStorage.hmImageAddressWithDBID.put(dbh.lastID(), alProducts.get(1));
                                     else
@@ -270,7 +273,12 @@ public class VolleyTask {
                                 }
                             }
                         }
-                        ArrayList<DataBaseHelper> dbData = new ArrayList<>(dbh.getAllProductsData());
+                        //ArrayList<DataBaseHelper> dbData = new ArrayList<>(dbh.getAllProductsData());
+                        ArrayList<DataBaseHelper> dbData = new ArrayList<>(dbh.getAllProductsData1());
+                        ArrayList<String> alProducts = new ArrayList<>();
+                        for (int i=0; i<dbData.size(); i++){
+                            alProducts.add(dbData.get(i).get_individual_product_names());
+                        }
                         sendMsgToActivity();
                     } catch (JSONException e) {
                         e.printStackTrace();
