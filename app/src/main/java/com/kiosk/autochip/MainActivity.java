@@ -92,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     private FilterAdapter filterAdapter;
     ArrayList<DataBaseHelper> alDb;
     ArrayList<String> alProductNames;
+    ArrayList<Integer> alProductsDBID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,7 +150,8 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 itemAtPosition = parent.getItemAtPosition(position).toString().trim();
-                openDisplayIndividualFragment(itemAtPosition, dbh.getDescriptionFromProductName(itemAtPosition));
+                int n = alProductNames.indexOf(itemAtPosition);
+                openDisplayIndividualFragment(itemAtPosition, dbh.getDescriptionFromProductName(itemAtPosition), n);
                 ibSearch.setVisibility(View.VISIBLE);
                 actvSearch.setText("");
                 hideKeyboardFrom(actvSearch);
@@ -165,6 +167,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
             public void onClick(View v) {
                 //alDb = new ArrayList<>(dbh.getAllProductsData1());
                 alProductNames = new ArrayList<>(dbh.getProductNamesOnly());
+                alProductsDBID = new ArrayList<>(dbh.getProductDBIDOnly());
                 filterAdapter = new FilterAdapter(MainActivity.this, android.R.layout.simple_dropdown_item_1line, alProductNames);
                 /*adapter = new ArrayAdapter<>(this,
                         android.R.layout.simple_dropdown_item_1line, alDeliveryOrderNumber);*/
@@ -518,13 +521,13 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         transaction.commit();
     }
 
-    private void openDisplayIndividualFragment(String sName, String sDescription) {
+    private void openDisplayIndividualFragment(String sName, String sDescription, int dbID) {
         Fragment newFragment;
         FragmentTransaction transaction;
         //Bundle bundle = new Bundle();
         //bundle.putInt("index", 0);
 
-        newFragment = DisplayIndividualFragment.newInstance(sName, sDescription);
+        newFragment = DisplayIndividualFragment.newInstance(sName, sDescription, dbID);
         //newFragment.setArguments(bundle);
 
         //String sBackStackParent = newFragment.getClass().getName();
@@ -586,7 +589,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                 //View inflated = stub.inflate();
                 break;
             case "OPEN_DISPLAY_FRAGMENT":
-                openDisplayIndividualFragment(sResults, sResult);
+                openDisplayIndividualFragment(sResults, sResult, type);
                 break;
             case "OPEN_DISPLAY_ENLARGE_PRODUCT_IMAGE":
                 openDisplayEnlargeProductFragment(sResults);

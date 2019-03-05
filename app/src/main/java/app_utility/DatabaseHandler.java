@@ -477,6 +477,39 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return alProductNames;
     }
 
+    public List<Integer> getProductDBIDOnly() {
+        List<DataBaseHelper> dataBaseHelperList = new ArrayList<>();
+        ArrayList<Integer> alProductDBID = new ArrayList<>();
+        // Select All Query
+        //String selectQuery = "SELECT  * FROM " + TABLE_INDIVIDUAL_PRODUCTS;
+        String selectQuery = "SELECT " + KEY_ID + "," + KEY_INDIVIDUAL_PRODUCT_NAMES +" FROM " + TABLE_INDIVIDUAL_PRODUCTS;
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                DataBaseHelper dataBaseHelper = new DataBaseHelper();
+                dataBaseHelper.set_id(Integer.parseInt(cursor.getString(0)));
+                /*dataBaseHelper.set_main_product_id(cursor.getInt(1));
+                dataBaseHelper.set_main_product_names(cursor.getString(2));*/
+                //dataBaseHelper.set_individual_product_names(cursor.getString(3));
+                /*dataBaseHelper.set_individual_product_names(cursor.getString(4));
+                dataBaseHelper.set_individual_product_description(cursor.getString(5));
+                dataBaseHelper.set_individual_product_address(cursor.getString(6));
+                dataBaseHelper.set_individual_product_images_path(cursor.getString(7));*/
+                // Adding data to list
+                dataBaseHelperList.add(dataBaseHelper);
+                //String s = String.valueOf(dataBaseHelperList.get(cursor.getPosition()).get_id());
+                int id = dataBaseHelperList.get(cursor.getPosition()).get_id();
+                alProductDBID.add(id);
+            } while (cursor.moveToNext());
+        }
+
+        // return recent list
+        return alProductDBID;
+    }
+
     public List<String> getTechSpecsHeading(String sKey) {
         List<DataBaseHelper> dataBaseHelperList = new ArrayList<>();
         ArrayList<String> alTechSpecs = new ArrayList<>();

@@ -27,6 +27,7 @@ public class ProductsRVAdapter extends RecyclerView.Adapter<ProductsRVAdapter.Pr
     ArrayList<String> alName = new ArrayList<>();
     ArrayList<String> alDescription = new ArrayList<>();
     ArrayList<String> alImagePath = new ArrayList<>();
+    ArrayList<Integer> alDBID = new ArrayList<>();
 
     public ProductsRVAdapter(Context context, RecyclerView recyclerView, String sTag) {
         this.context = context;
@@ -37,7 +38,7 @@ public class ProductsRVAdapter extends RecyclerView.Adapter<ProductsRVAdapter.Pr
         for(int i=0; i<alDb.size(); i++){
             if(alDb.get(i).get_product_category_names().equals(sTag)){
                 alName.add(alDb.get(i).get_individual_product_names());
-
+                alDBID.add(alDb.get(i).get_id());
                 alDescription.add(alDb.get(i).get_individual_product_description());
                 alImagePath.add(alDb.get(i).get_individual_product_images_path());
             }
@@ -103,14 +104,14 @@ public class ProductsRVAdapter extends RecyclerView.Adapter<ProductsRVAdapter.Pr
         holder.ivProducts.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity.onFragmentInteractionListener.onFragmentMessage("OPEN_DISPLAY_FRAGMENT", position, alName.get(position),alDescription.get(position));
+                MainActivity.onFragmentInteractionListener.onFragmentMessage("OPEN_DISPLAY_FRAGMENT", alDBID.get(position), alName.get(position),alDescription.get(position));
             }
         });
 
         holder.tvProductName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity.onFragmentInteractionListener.onFragmentMessage("OPEN_DISPLAY_FRAGMENT", position, alName.get(position),alDescription.get(position));
+                MainActivity.onFragmentInteractionListener.onFragmentMessage("OPEN_DISPLAY_FRAGMENT", alDBID.get(position), alName.get(position),alDescription.get(position));
             }
         });
 
