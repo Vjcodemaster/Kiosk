@@ -12,8 +12,10 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -48,6 +50,7 @@ import app_utility.OnFragmentInteractionListener;
 import app_utility.PermissionHandler;
 import app_utility.SharedPreferencesClass;
 import app_utility.StaticReferenceClass;
+import app_utility.TrufrostAsyncTask;
 import app_utility.VolleyTask;
 
 import static app_utility.PermissionHandler.WRITE_PERMISSION;
@@ -93,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
     ArrayList<DataBaseHelper> alDb;
     ArrayList<String> alProductNames;
     ArrayList<Integer> alProductsDBID;
+    ArrayList<String> alSubCategoryNames;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,10 +169,20 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
         ibSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //alDb = new ArrayList<>(dbh.getAllProductsData1());
-                alProductNames = new ArrayList<>(dbh.getProductNamesOnly());
-                alProductsDBID = new ArrayList<>(dbh.getProductDBIDOnly());
+                alDb = new ArrayList<>(dbh.getDataForSearch());
+                alProductsDBID = new ArrayList<>();
+                alSubCategoryNames = new ArrayList<>();
+                alProductNames = new ArrayList<>();
+                for(int i=0; i<alDb.size(); i++){
+                    alProductsDBID.add(alDb.get(i).get_id());
+                    alSubCategoryNames.add(alDb.get(i).get_product_category_names());
+                    alProductNames.add(alDb.get(i).get_individual_product_names());
+                }
+
+                //alProductNames = new ArrayList<>(dbh.getProductNamesOnly());
+                //alProductsDBID = new ArrayList<>(dbh.getProductDBIDOnly());
                 filterAdapter = new FilterAdapter(MainActivity.this, android.R.layout.simple_dropdown_item_1line, alProductNames);
+                //filterAdapter = new FilterAdapter(MainActivity.this, R.layout.autocomplete_layout, alProductNames);
                 /*adapter = new ArrayAdapter<>(this,
                         android.R.layout.simple_dropdown_item_1line, alDeliveryOrderNumber);*/
 
@@ -305,6 +319,9 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                 });
             }
         }
+
+        /*TrufrostAsyncTask trufrostAsyncTask = new TrufrostAsyncTask(getApplicationContext());
+        trufrostAsyncTask.execute(String.valueOf(2), "");*/
         //openMenuFragment();
     }
 
@@ -757,6 +774,17 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
             return filteredList.get(position);
         }
 
+        /*@Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            super.getView(position, convertView, parent);
+
+            if (convertView == null) {
+                convertView = LayoutInflater.from(parent.getContext())
+                        .inflate(itemLayout, parent, false);
+            }
+
+            return convertView;
+        }*/
         /*@Override
         public View getView(int position, View convertView, ViewGroup parent) {
             super.getView(position, convertView, parent);

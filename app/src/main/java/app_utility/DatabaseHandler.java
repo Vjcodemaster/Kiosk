@@ -605,6 +605,32 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // return recent list
         return dataBaseHelperList;
     }
+
+
+    public List<DataBaseHelper> getDataForSearch() {
+        List<DataBaseHelper> dataBaseHelperList = new ArrayList<>();
+        // Select All Query
+        //String selectQuery = "SELECT  * FROM " + TABLE_INDIVIDUAL_PRODUCTS;
+        String selectQuery = "SELECT " + KEY_ID + "," + KEY_SUB_PRODUCT_CATEGORY_NAMES + "," + KEY_INDIVIDUAL_PRODUCT_NAMES +" FROM " + TABLE_INDIVIDUAL_PRODUCTS;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                DataBaseHelper dataBaseHelper = new DataBaseHelper();
+                dataBaseHelper.set_id(Integer.parseInt(cursor.getString(0)));
+                dataBaseHelper.set_product_category_names(cursor.getString(1));
+                dataBaseHelper.set_individual_product_names(cursor.getString(2));
+                // Adding data to list
+                dataBaseHelperList.add(dataBaseHelper);
+            } while (cursor.moveToNext());
+        }
+
+        // return recent list
+        return dataBaseHelperList;
+    }
         /*if(sName==null){
         return "";
     }*//*

@@ -58,4 +58,7 @@
 
     <!-- related to transition -->
     <string name="viewpager_transition">viewpager_transition</string>
+
+    <!-- related to progress bar-->
+    <string name="please_wait">Please wait&#8230;</string>
 </resources>

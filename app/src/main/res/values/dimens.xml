@@ -15,4 +15,7 @@
     <dimen name="layout_activity_detail_margin_medium">13dp</dimen>
     <dimen name="layout_activity_detail_card_radius">5.2dp</dimen>
     <dimen name="layout_activity_detail_card_elevation">3.9dp</dimen>
+
+    <!-- related to progressbar-->
+    <dimen name="layout_margin_progressbar">4dp</dimen>
 </resources>
