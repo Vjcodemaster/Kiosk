@@ -2,6 +2,7 @@ package app_utility;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -79,6 +80,7 @@ public class TrufrostAsyncTask extends AsyncTask<String, Void, String> {
                 break;
             case 2:
                 validateLogin();
+                //getData();
                 //updateTask();
                 break;
             case 3:
@@ -153,7 +155,7 @@ public class TrufrostAsyncTask extends AsyncTask<String, Void, String> {
         //240
         try {
             OdooConnect oc = OdooConnect.connect(SERVER_URL, PORT_NO, DB_NAME, USER_ID, PASSWORD);
-            Object[] conditions = new Object[104];
+            /*Object[] conditions = new Object[104];
             //conditions[0] = new Object[]{"id", "!=", "0099009"};
             conditions[0] = new Object[]{"blood_bags_id", "!=", null};
             conditions[1] = new Object[]{"ambient_id", "!=", null};
@@ -258,18 +260,141 @@ public class TrufrostAsyncTask extends AsyncTask<String, Void, String> {
             conditions[100] = new Object[]{"handle_id", "!=", null};
             conditions[101] = new Object[]{"reversible_door_id", "!=", null};
             conditions[102] = new Object[]{"colour_id", "!=", null};
-            conditions[103] = new Object[]{"id", "=", 371};
+            conditions[103] = new Object[]{"id", "=", 371};*/
 
+            Integer[] ids = new Integer[3];
+            ids[0] = 371;
+            ids[1] = 304;
+            ids[2] = 303;
+
+            //ids
             Object[] conditions1 = new Object[1];
             //conditions[0] = new Object[]{"id", "!=", "0099009"};
             conditions1[0] = new Object[]{"id", "!=", 0};
 
+            //conditions1[1] = new Object[]{"id", "=", 304};
 
-            List<HashMap<String, Object>> stallData = oc.search_read("technical.specification", new Object[]{conditions1}, "name", "tech_spec_name");
-            if (stallData.size() == 1) {
+            String[] fields = new String[103];
+            fields[0] = "blood_bags_id";
+            fields[1] = "ambient_id";
+            fields[2] = "baking_plate_revolve_id";
+            fields[3] = "boiler_capacity_id";
+            fields[4] = "bottle_storage_id";
+            fields[5] = "bowl_capacity_id";
+            fields[6] = "bowl_speed_id";
+            fields[7] = "cabinet_case_id";
+            fields[8] = "capacity_in_cft_id";
+            fields[9] = "capacity_in_gallons_id";
+            fields[10] = "capacity_in_litre_id";
+            fields[11] = "cavity_dimension_id";
+            fields[12] = "cavity_voulme_id";
+            fields[13] = "compatible_storage_bin_id";
+            fields[14] = "consecutive_dispensing_id";
+            fields[15] = "cooking_surface_id";
+            fields[16] = "cooking_time_id";
+            fields[17] = "cooling_system_id";
+            fields[18] = "cube_shape_id";
+            fields[19] = "current_id";
+            fields[20] = "defrost_id";
+            fields[21] = "digital_temp_indicator_id";
+            fields[22] = "dimensions_id";
+            fields[23] = "door_handle_id";
+            fields[24] = "drive_motor_id";
+            fields[25] = "electricals_id";
+            fields[26] = "external_dimension_id";
+            fields[27] = "fans_id";
+            fields[28] = "first_dispensing_id";
+            fields[29] = "flavours_id";
+            fields[30] = "freezing_cylinder_id";
+            fields[31] = "freezing_cylinder_capacity_id";
+            fields[32] = "fry_basket_id";
+            fields[33] = "frypot_oil_id";
+            fields[34] = "gas_input_id";
+            fields[35] = "glass_door_id";
+            fields[36] = "gn_en_id";
+            fields[37] = "griddle_dimension_id";
+            fields[38] = "grinding_burrs_id";
+            fields[39] = "gross_volumels_id";
+
+            fields[40] = "heat_load_id";
+            fields[41] = "hopper_capacity_id";
+            fields[42] = "ice_storage_id";
+            fields[43] = "input_power_id";
+            fields[44] = "interior_dimensions_id";
+            fields[45] = "interior_light_id";
+            fields[46] = "jar_capacity_id";
+            fields[47] = "lighting_under_id";
+            fields[48] = "loading_temp_id";
+            fields[49] = "lock_id";
+            fields[50] = "max_kneading_id";
+            fields[51] = "max_loading_id";
+            fields[52] = "max_production_id";
+            fields[53] = "max_room_area_id";
+            fields[54] = "max_room_volume_id";
+            fields[55] = "mix_hopper_id";
+            fields[56] = "mixing_speed_id";
+            fields[57] = "motor_power_id";
+            fields[58] = "net_weight_id";
+            fields[59] = "no_of_baskets_id";
+            fields[60] = "no_of_beech_id";
+            fields[61] = "no_of_compressor_id";
+            fields[62] = "no_of_doors_id";
+            fields[63] = "no_of_layers_id";
+            fields[64] = "no_of_lids_id";
+            fields[65] = "no_of_shelves_id";
+            fields[66] = "power_id";
+            fields[67] = "power_supply_id";
+            fields[68] = "power_consumption_id";
+            fields[69] = "product_dimension_id";
+            fields[70] = "product_weight_id";
+            fields[71] = "rated_capacity_id";
+            fields[72] = "rated_input_ower_id";
+            fields[73] = "refrigerant_id";
+            fields[74] = "remarks_id";
+            fields[75] = "stabilizer_id";
+            fields[76] = "temp_display_id";
+            fields[77] = "temp_range_id";
+            fields[78] = "temperature_range_id";
+            fields[79] = "time_control_id";
+            fields[80] = "volts_id";
+            fields[81] = "volume_id";
+            fields[82] = "wdh_inchs_id";
+            fields[83] = "wdh_mm_id";
+            fields[84] = "wheels_castors_id";
+            fields[85] = "output_id";
+            fields[86] = "quantity_id";
+            fields[87] = "ventilations_id";
+            fields[88] = "temp_con_panel_id";
+            fields[89] = "ref_cap_id";
+            fields[90] = "defrosting_id";
+            fields[91] = "front_glass_id";
+            fields[92] = "doors_id";
+            fields[93] = "compressor_id";
+            fields[94] = "ref_freezer_id";
+            fields[95] = "certificate_id";
+            fields[96] = "temp_control_id";
+
+            fields[97] = "temp_con_pos_num_id";
+            fields[98] = "ice_maker_cham_id";
+            fields[99] = "adjustable_leg_id";
+            fields[100] = "handle_id";
+            fields[101] = "reversible_door_id";
+            fields[102] = "colour_id";
+
+
+            //conditions1[1] = new Object[]{"bowl_capacity_id", "!=", 0};
+
+            //"technical.specification"
+
+            //List<HashMap<String, Object>> stallData = oc.search_read("product.template", new Object[]{conditions1}, "name", "tech_spec_name");
+            //List<HashMap<String, Object>> stallData = oc.search_read("product.template", new Object[]{conditions1}, "id", "bowl_capacity_id", "ambient_id");
+            List<HashMap<String, Object>> stallData = oc.search_read("product.template", new Object[]{conditions1}, fields);
+
+            //getData();
+            /*if (stallData.size() == 1) {
                 isPresent = true;
                 odooID = Integer.valueOf(stallData.get(0).get("id").toString());
-            }
+            }*/
             /*for (int i = 0; i < stallData.size(); ++i) {
                 //int id = Integer.valueOf(data.get(i).get("id").toString());
                 String sName = String.valueOf(stallData.get(i).get("name").toString());
@@ -286,6 +411,24 @@ public class TrufrostAsyncTask extends AsyncTask<String, Void, String> {
                 }
             }*/
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getData() {
+        //240
+        try {
+            OdooConnect oc = OdooConnect.connect(SERVER_URL, PORT_NO, DB_NAME, USER_ID, PASSWORD);
+            Object[] conditions1 = new Object[1];
+            //conditions[0] = new Object[]{"id", "!=", "0099009"};
+            conditions1[0] = new Object[]{"id", "=", 371};
+            List<HashMap<String, Object>> stallData = oc.search_read("technical.specification", new Object[]{conditions1}, "id","name", "tech_spec_name");
+            //List<HashMap<String, Object>> data = oc.search_read("technical.specification", new Object[]{conditions1}, "name");
+            if (stallData.size() == 1) {
+                isPresent = true;
+                odooID = Integer.valueOf(stallData.get(0).get("id").toString());
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

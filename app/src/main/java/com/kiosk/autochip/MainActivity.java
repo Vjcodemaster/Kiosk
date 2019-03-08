@@ -12,10 +12,8 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.TypedValue;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -29,6 +27,10 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -319,10 +321,35 @@ public class MainActivity extends AppCompatActivity implements OnFragmentInterac
                 });
             }
         }
+        try {
+            JSONObject jsonObject = new JSONObject(loadJSONFromAsset());
+            //for(int i=0; i<jsonObject.length();i++){
+                String json = jsonObject.getString("bowl_speed_id");
+                String ss = json + 123;
+            //}
+        }catch (Exception e){
 
-        /*TrufrostAsyncTask trufrostAsyncTask = new TrufrostAsyncTask(getApplicationContext());
-        trufrostAsyncTask.execute(String.valueOf(2), "");*/
+        }
+
+        TrufrostAsyncTask trufrostAsyncTask = new TrufrostAsyncTask(getApplicationContext());
+        trufrostAsyncTask.execute(String.valueOf(2), "");
         //openMenuFragment();
+    }
+
+    public String loadJSONFromAsset() {
+        String json = null;
+        try {
+            InputStream is = MainActivity.this.getAssets().open("specs.json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return json;
     }
 
     public void addDynamicContentsForMainMenu(int i, ArrayList<String> alMainProductName) {
